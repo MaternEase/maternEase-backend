@@ -1,7 +1,7 @@
 package com.maternease.maternease.service;
 
 import com.maternease.maternease.dto.ReqRes;
-import com.maternease.maternease.entity.OurUsers;
+import com.maternease.maternease.entity.Users;
 import com.maternease.maternease.repository.UsersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,14 +28,14 @@ public class UsersManagementService {
     public ReqRes register(ReqRes registrationRequest) {
         ReqRes resp = new ReqRes();
         try {
-            Optional<OurUsers> existingUserByEmail = usersRepo.findByEmail(registrationRequest.getEmail());
+            Optional<Users> existingUserByEmail = usersRepo.findByEmail(registrationRequest.getEmail());
             if (existingUserByEmail.isPresent()) {
                 resp.setStatusCode(400);
                 resp.setMassage("Email is already registered!");
                 return resp;
             }
 
-            OurUsers ourUser = new OurUsers();
+            Users ourUser = new Users();
             ourUser.setEmail(registrationRequest.getEmail());
             ourUser.setFirstName(registrationRequest.getFirstName());
             ourUser.setRole(registrationRequest.getRole());
@@ -47,7 +47,7 @@ public class UsersManagementService {
             ourUser.setLane(registrationRequest.getLane());
             ourUser.setPostalCode(registrationRequest.getPostalCode());
             ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
-            OurUsers ourUsersResult = usersRepo.save(ourUser);
+            Users ourUsersResult = usersRepo.save(ourUser);
             if (ourUsersResult.getId() > 0) {
                 resp.setOurUsers(String.valueOf(ourUsersResult));
                 resp.setMassage("User registered successfully");
@@ -89,7 +89,7 @@ public class UsersManagementService {
         ReqRes response = new ReqRes();
         try {
             String ourEmail = jwtUtils.extractUsername(refreshTokenRequest.getToken());
-            OurUsers users = usersRepo.findByEmail(ourEmail).orElseThrow();
+            Users users = usersRepo.findByEmail(ourEmail).orElseThrow();
             if (jwtUtils.isTokenValid(refreshTokenRequest.getToken(), users)) {
                 var jwt = jwtUtils.generateToken(users);
                 response.setToken(jwt);
@@ -111,7 +111,7 @@ public class UsersManagementService {
     public ReqRes getUsersById(int id) {
         ReqRes reqRes = new ReqRes();
         try {
-            OurUsers usersById = usersRepo.findById(id).orElseThrow(() -> new RuntimeException("User Not Found"));
+            Users usersById = usersRepo.findById(id).orElseThrow(() -> new RuntimeException("User Not Found"));
             reqRes.setOurUsers(String.valueOf(usersById));
             reqRes.setStatusCode(200);
             reqRes.setMassage("Users with id '" + id + "' found successfully");
@@ -122,10 +122,10 @@ public class UsersManagementService {
         return reqRes;
     }
 
-    public ReqRes updateUser(Integer userId, OurUsers updatedUser) {
+    public ReqRes updateUser(Integer userId, Users updatedUser) {
         ReqRes reqRes = new ReqRes();
         try {
-            OurUsers existingUser = usersRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found for update"));
+            Users existingUser = usersRepo.findById(userId).orElseThrow(() -> new RuntimeException("User not found for update"));
             existingUser.setEmail(updatedUser.getEmail());
             existingUser.setFirstName(updatedUser.getFirstName());
             existingUser.setLastName(updatedUser.getLastName());
@@ -134,7 +134,7 @@ public class UsersManagementService {
                 existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
             }
 
-            OurUsers savedUser = usersRepo.save(existingUser);
+            Users savedUser = usersRepo.save(existingUser);
             reqRes.setOurUsers(String.valueOf(savedUser));
             reqRes.setStatusCode(200);
             reqRes.setMassage("User updated successfully");
@@ -148,7 +148,7 @@ public class UsersManagementService {
     public ReqRes getMyInfo(String email) {
         ReqRes reqRes = new ReqRes();
         try {
-            OurUsers user = usersRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+            Users user = usersRepo.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
             reqRes.setOurUsers(String.valueOf(user));
             reqRes.setStatusCode(200);
             reqRes.setMassage("Successful");

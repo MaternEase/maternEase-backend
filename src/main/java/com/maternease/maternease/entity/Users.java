@@ -11,9 +11,9 @@ import java.util.List;
 
 
 @Entity
-@Table(name="OurUsers")
+@Table(name="users")
 @Data
-public class OurUsers implements UserDetails {
+public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -65,6 +65,10 @@ public class OurUsers implements UserDetails {
 
     @Column(nullable = false, length = 255)
     private String role;
+
+    @ManyToOne
+    @JoinColumn(name = "clinic_id")
+    private Clinic clinic;
 
 
     @Override
