@@ -1,13 +1,12 @@
 package com.maternease.maternease.controller;
 
 import com.maternease.maternease.dto.ReqRes;
-import com.maternease.maternease.entity.OurUsers;
+import com.maternease.maternease.entity.Users;
 import com.maternease.maternease.service.UsersManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 public class UserManagementController {
@@ -23,6 +22,8 @@ public class UserManagementController {
     public ResponseEntity<ReqRes> login(@RequestBody ReqRes req){
         return ResponseEntity.ok(usersManagementService.login(req));
     }
+
+//
 
     @PostMapping("/auth/refresh")
     public ResponseEntity<ReqRes> refreshToken(@RequestBody ReqRes req){
@@ -41,8 +42,10 @@ public class UserManagementController {
 
     }
 
+
+
     @PutMapping("/admin/update/{userId}")
-    public ResponseEntity<ReqRes> updateUser(@PathVariable Integer userId, @RequestBody OurUsers reqres){
+    public ResponseEntity<ReqRes> updateUser(@PathVariable Integer userId, @RequestBody Users reqres){
         return ResponseEntity.ok(usersManagementService.updateUser(userId, reqres));
     }
 
