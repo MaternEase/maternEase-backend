@@ -23,7 +23,7 @@ public class ClinicAttendee {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Users users;
+    private OurUsers ourUsers;
 
     @OneToMany(mappedBy = "clinicAttendee")
     private List<Appointment> appointments;

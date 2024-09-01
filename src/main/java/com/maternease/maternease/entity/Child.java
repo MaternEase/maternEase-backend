@@ -20,15 +20,15 @@ public class Child {
     private String bloodGroup;
     private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "mother_id")
-    private Mother Mother;
+//    @ManyToOne
+//    @JoinColumn(name = "mother_id")
+//    private Mother Mother;
 
-    @ManyToOne
-    @JoinColumn(name = "clinic_attendee_id")
-    private ClinicAttendee clinicAttendee;
-
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Users user;
+//    @ManyToOne
+//    @JoinColumn(name = "clinic_attendee_id")
+//    private ClinicAttendee clinicAttendee;
+//
+//    @OneToOne
+//    @JoinColumn(name = "user_id", referencedColumnName = "id")
+//    private Users user;
 }

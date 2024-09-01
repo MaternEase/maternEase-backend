@@ -16,5 +16,5 @@ public class MotherDTO {
     private String detailsOfHusband;
     private String fullName;
     private int age;
-    private List<Long> childIds; // List of Child IDs associated with the expectant mother
+//    private List<Long> childIds; // List of Child IDs associated with the expectant mother
 }

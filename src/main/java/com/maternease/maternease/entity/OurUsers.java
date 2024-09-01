@@ -1,5 +1,7 @@
 package com.maternease.maternease.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,67 +13,66 @@ import java.util.List;
 
 
 @Entity
-@Table(name="users")
+@Table(name="ourusers")
 @Data
-public class Users implements UserDetails {
+public class OurUsers implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(nullable = false, length = 255)
+    @Column( length = 255)
     private String email;
 
-    @Column( nullable = false, length = 255)
+    @Column(  length = 255)
     private String firstName;
 
-    @Column( nullable = false, length = 255)
+    @Column(  length = 255)
     private String lastName;
 
-    @Column(length = 15, nullable = false)
+    @Column(length = 15)
     private String nic;
 
-    @Column(nullable = false)
+    @Column
     private Byte status; // tinyint in database maps to Byte in Java
 
-    @Column( nullable = true, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(  columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @Column(nullable = false, length = 512)
+    @Column( length = 512)
     private String password;
 
-    @Column( nullable = true, length = 255)
+    @Column( length = 255)
     private String contactNo;
 
-    @Column( nullable = false, length = 255)
+    @Column(  length = 255)
     private String homeNumber;
 
-    @Column(nullable = false, length = 255)
+    @Column( length = 255)
     private String lane;
 
-    @Column(nullable = false, length = 255)
+    @Column( length = 255)
     private String city;
 
-    @Column(nullable = false, length = 255)
+    @Column( length = 255)
     private String postalCode;
 
-    @Column(nullable = true)
+    @Column
     @Temporal(TemporalType.DATE)
     private Date dob;
 
-    @Column(nullable = true, length = 255)
+    @Column( length = 255)
     private String gender;
 
 
-    @Column(nullable = false, length = 255)
+    @Column( length = 255)
     private String role;
 
-    @ManyToOne
-    @JoinColumn(name = "clinic_id")
-    private Clinic clinic;
+
 
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));
     }
@@ -80,7 +81,7 @@ public class Users implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "email";
+        return this.email;
     }
 
     @Override

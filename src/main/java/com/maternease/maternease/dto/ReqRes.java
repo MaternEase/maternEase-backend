@@ -2,7 +2,7 @@ package com.maternease.maternease.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.maternease.maternease.entity.Users;
+import com.maternease.maternease.entity.OurUsers;
 import lombok.Data;
 
 import java.util.Date;
@@ -33,6 +33,8 @@ public class ReqRes {
     private Date dob;
     private String gender;
     private String role;
-    private String ourUsers;
-    private List<Users> ourUsersList;
+    private OurUsers ourUsers;
+    private List<OurUsers> ourUsersList;
+
+
 }

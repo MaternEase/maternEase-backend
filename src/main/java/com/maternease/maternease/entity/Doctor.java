@@ -3,8 +3,6 @@ package com.maternease.maternease.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
-
 @Entity
 @Table(name="doctor")
 @Data
@@ -19,7 +17,7 @@ public class Doctor {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Users user;
+    private OurUsers user;
 
 //    @OneToMany(mappedBy = "doctor")
 //    private List<Notification> notifications;

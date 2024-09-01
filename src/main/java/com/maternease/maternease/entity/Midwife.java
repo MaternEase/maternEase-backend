@@ -3,7 +3,6 @@ package com.maternease.maternease.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.List;
 @Entity
 @Table(name="midwife")
 @Data
@@ -21,5 +20,5 @@ public class Midwife {
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private Users user;
+    private OurUsers user;
 }
