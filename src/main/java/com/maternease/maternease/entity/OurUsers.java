@@ -16,58 +16,42 @@ import java.util.List;
 @Table(name="ourusers")
 @Data
 public class OurUsers implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @EmbeddedId
+    private OurUsersId ourUsersId;
+
+    @Column(length = 255, insertable = false, updatable = false)
+    private String role;
+
+    @Column(  length = 255)
+    private String fullName;
 
     @Column( length = 255)
     private String email;
 
-    @Column(  length = 255)
-    private String firstName;
+    @Column( length = 255)
+    private String address;
 
-    @Column(  length = 255)
-    private String lastName;
+    @Column( length = 255)
+    private String contactNo;
+
+    @Column( length = 512)
+    private String password;
 
     @Column(length = 15)
     private String nic;
-
-    @Column
-    private Byte status; // tinyint in database maps to Byte in Java
 
     @Column(  columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
-    @Column( length = 512)
-    private String password;
-
-    @Column( length = 255)
-    private String contactNo;
-
-    @Column(  length = 255)
-    private String homeNumber;
-
-    @Column( length = 255)
-    private String lane;
-
-    @Column( length = 255)
-    private String city;
-
-    @Column( length = 255)
-    private String postalCode;
-
     @Column
-    @Temporal(TemporalType.DATE)
-    private Date dob;
-
-    @Column( length = 255)
     private String gender;
 
+    @Column
+    private Date dob;
 
-    @Column( length = 255)
-    private String role;
-
+    @Column
+    private int age;
 
 
 
@@ -76,7 +60,6 @@ public class OurUsers implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));
     }
-
 
 
     @Override

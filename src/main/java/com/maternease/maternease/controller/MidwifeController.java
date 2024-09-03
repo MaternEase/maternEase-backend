@@ -8,21 +8,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/v1/midwife")
 @CrossOrigin
 public class MidwifeController {
 
     @Autowired
     private MidwifeService midwifeService;
 
-    @PostMapping(path = "/motherSave")
-    public String saveMother(@RequestBody MotherDTO motherDTO){
+//    @PostMapping(path = "/motherSave")
+//    public String saveMother(@RequestBody MotherDTO motherDTO){
 //       return midwifeService.addMother(motherDTO);
-        return "Nishan";
-    }
+////        return "Nishan";
+//    }
 
-    @GetMapping(path = "/sss")
-    public String sadee(){
-        return "sadeep";
-    }
+
+
+//    @GetMapping(path = "/sss")
+//    public String sadee(){
+//        return "sadeep";
+//    }
 }

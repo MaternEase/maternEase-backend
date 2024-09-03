@@ -15,8 +15,11 @@ public class Admin {
     private String password;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
-    private OurUsers user;
+    @JoinColumns({
+            @JoinColumn(name = "user_role", referencedColumnName = "role"),
+            @JoinColumn(name = "user_id", referencedColumnName = "id")
+    })
+    private OurUsers ourUsers;
 
 //    @OneToMany(mappedBy = "admin")
 //    private List<Notification> notifications;

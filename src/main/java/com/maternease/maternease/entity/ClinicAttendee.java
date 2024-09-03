@@ -21,8 +21,11 @@ public class ClinicAttendee {
     @JoinColumn(name = "clinic_id")
     private Clinic clinic; // Add this field to link back to the Clinic entity
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "user_role", referencedColumnName = "role"),
+            @JoinColumn(name = "user_id", referencedColumnName = "id")
+    })
     private OurUsers ourUsers;
 
     @OneToMany(mappedBy = "clinicAttendee")

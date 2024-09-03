@@ -13,11 +13,11 @@ public class AntenatalRiskCondition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "mother_name")
-    private String motherName;
+    @Column(name = "full_name")
+    private String fullName;
 
-    @Column(name = "mother_age")
-    private Integer motherAge;
+    @Column(name = "age")
+    private Integer age;
 
     @Column(name = "husband_name")
     private String husbandName;
@@ -52,8 +52,8 @@ public class AntenatalRiskCondition {
     @Column(name = "address")
     private String address;
 
-    @Column(name = "telephone_number")
-    private String telephoneNumber;
+    @Column(name = "contact_no")
+    private String contactNo;
 
     @Column(name = "distance_mother_office")
     private String distanceMotherOffice;

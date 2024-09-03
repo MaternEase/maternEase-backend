@@ -2,6 +2,7 @@ package com.maternease.maternease.service;
 
 import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.entity.OurUsers;
+import com.maternease.maternease.entity.OurUsersId;
 import com.maternease.maternease.repository.OurUsersRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -87,13 +88,14 @@ public class UsersManagementService {
         }
     }
 
-    public ReqRes getUsersById(int id) {
+    public ReqRes getUsersById(String role,int id) {
         ReqRes reqRes = new ReqRes();
         try {
-            OurUsers ourUsersById = ourUsersRepo.findById(id).orElseThrow(() -> new RuntimeException("User Not Found"));
-            reqRes.setOurUsers((ourUsersById));
+            OurUsersId ourUsersId = new OurUsersId(role, id);
+            OurUsers ourUsersById = ourUsersRepo.findById(ourUsersId).orElseThrow(() -> new RuntimeException("User Not Found"));
+            reqRes.setOurUsers(ourUsersById);
             reqRes.setStatusCode(200);
-            reqRes.setMassage("Users with id '" + id + "' found successfully");
+            reqRes.setMassage("User with id '" + id + "' found successfully");
         } catch (Exception e) {
             reqRes.setStatusCode(500);
             reqRes.setMassage("Error occurred: " + e.getMessage());
@@ -101,29 +103,28 @@ public class UsersManagementService {
         return reqRes;
     }
 
-    public ReqRes updateUser(Integer userId, OurUsers updatedUser) {
+    public ReqRes updateUser(String role, Integer userId, OurUsers updatedUser) {
         ReqRes reqRes = new ReqRes();
         try {
-            Optional<OurUsers> userOptional = ourUsersRepo.findById(userId);
+            OurUsersId ourUsersId = new OurUsersId(role, userId);
+            Optional<OurUsers> userOptional = ourUsersRepo.findById(ourUsersId);
             if (userOptional.isPresent()) {
                 OurUsers existingUser = userOptional.get();
                 existingUser.setEmail(updatedUser.getEmail());
-                existingUser.setFirstName(updatedUser.getFirstName());
-                existingUser.setLastName(updatedUser.getLastName());
+                existingUser.setFullName(updatedUser.getFullName());
                 existingUser.setRole(updatedUser.getRole());
-
 
                 if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
                     existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
                 }
 
                 OurUsers savedUser = ourUsersRepo.save(existingUser);
-                reqRes.setOurUsers((savedUser));
+                reqRes.setOurUsers(savedUser);
                 reqRes.setStatusCode(200);
                 reqRes.setMassage("User updated successfully");
-            }else{
+            } else {
                 reqRes.setStatusCode(404);
-                reqRes.setMassage("user not found for update");
+                reqRes.setMassage("User not found for update");
             }
         } catch (Exception e) {
             reqRes.setStatusCode(500);
@@ -179,23 +180,17 @@ public class UsersManagementService {
             }
             OurUsers ourUser = new OurUsers();
             ourUser.setEmail(req.getEmail());
-            ourUser.setFirstName(req.getFirstName());
-            ourUser.setLastName(req.getLastName());
+            ourUser.setFullName(req.getFullName());
             ourUser.setNic(req.getNic());
-            ourUser.setStatus(req.getStatus());
             ourUser.setCreatedAt(new Date());  // Automatically set to the current timestamp
             ourUser.setPassword(passwordEncoder.encode(req.getPassword()));
             ourUser.setContactNo(req.getContactNo());
-            ourUser.setHomeNumber(req.getHomeNumber());
-            ourUser.setLane(req.getLane());
-            ourUser.setCity(req.getCity());
-            ourUser.setPostalCode(req.getPostalCode());
             ourUser.setDob(req.getDob());
             ourUser.setGender(req.getGender());
             ourUser.setRole(req.getRole());
 
             OurUsers ourUsersResult = ourUsersRepo.save(ourUser);
-            if (ourUsersResult.getId()>0) {
+            if (ourUsersResult.getOurUsersId().getId()>0) {
                 resp.setOurUsers((ourUsersResult));
                 resp.setMassage("User registered successfully");
                 resp.setStatusCode(200);
@@ -233,13 +228,14 @@ public class UsersManagementService {
             }
 
             OurUsers ourUser = new OurUsers();
+            OurUsersId ourUsersId = new OurUsersId(req.getRole(), 0); // Assuming id is auto-generated
+
+            ourUser.setOurUsersId(ourUsersId);
             ourUser.setEmail(req.getEmail());
-            ourUser.setRole(req.getRole());
-//            ourUser.setName(req.getName());
-//            ourUser.setContactNumber(req.getContactNumber());
             ourUser.setPassword(passwordEncoder.encode(req.getPassword()));
+
             OurUsers ourUsersResult = ourUsersRepo.save(ourUser);
-            if (ourUsersResult.getId()>0) {
+            if (ourUsersResult.getOurUsersId().getId()>0) {
                 resp.setOurUsers((ourUsersResult));
                 resp.setMassage("User registered successfully");
                 resp.setStatusCode(200);
@@ -314,12 +310,13 @@ public class UsersManagementService {
         return reqRes;
     }
 
-    public ReqRes deleteUser(Integer userId) {
+    public ReqRes deleteUser(String role, Integer userId) {
         ReqRes reqRes = new ReqRes();
         try {
-            Optional<OurUsers> userOptional = ourUsersRepo.findById(userId);
+            OurUsersId ourUsersId = new OurUsersId(role, userId);
+            Optional<OurUsers> userOptional = ourUsersRepo.findById(ourUsersId);
             if (userOptional.isPresent()) {
-                ourUsersRepo.deleteById(userId);
+                ourUsersRepo.deleteById(ourUsersId);
                 reqRes.setStatusCode(200);
                 reqRes.setMassage("User deleted successfully");
             } else {
@@ -332,5 +329,6 @@ public class UsersManagementService {
         }
         return reqRes;
     }
+
 }
 

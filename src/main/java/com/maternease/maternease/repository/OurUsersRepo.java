@@ -1,13 +1,14 @@
 package com.maternease.maternease.repository;
 
 import com.maternease.maternease.entity.OurUsers;
+import com.maternease.maternease.entity.OurUsersId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 @Repository
-public interface OurUsersRepo extends JpaRepository<OurUsers,Integer> {
+public interface OurUsersRepo extends JpaRepository<OurUsers, OurUsersId> {
 
     Optional<OurUsers> findByEmail(String email);
 

@@ -5,6 +5,7 @@ import com.maternease.maternease.dto.ResponseDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface MidwifeService {
-    String addMother(MotherDTO motherDTO);
+//    String addMother(MotherDTO motherDTO);
+
 
 }

@@ -19,6 +19,9 @@ public class Midwife {
     private Clinic clinic;
 
     @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private OurUsers user;
+    @JoinColumns({
+            @JoinColumn(name = "user_role", referencedColumnName = "role"),
+            @JoinColumn(name = "user_id", referencedColumnName = "id")
+    })
+    private OurUsers ourUsers;
 }

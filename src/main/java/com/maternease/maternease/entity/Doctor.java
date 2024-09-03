@@ -15,10 +15,11 @@ public class Doctor {
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private OurUsers user;
 
-//    @OneToMany(mappedBy = "doctor")
-//    private List<Notification> notifications;
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "user_role", referencedColumnName = "role"),
+            @JoinColumn(name = "user_id", referencedColumnName = "id")
+    })
+    private OurUsers ourUsers;
 }
