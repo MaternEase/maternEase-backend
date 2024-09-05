@@ -1,6 +1,9 @@
 package com.maternease.maternease.service.IMPL;
 
 import com.maternease.maternease.dto.MotherDTO;
+import com.maternease.maternease.dto.OurUsersDTO;
+import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.entity.AntenatalRiskCondition;
 import com.maternease.maternease.entity.Mother;
 import com.maternease.maternease.entity.OurUsers;
 import com.maternease.maternease.repository.AntenatalRiskConditionRepo;
@@ -31,42 +34,41 @@ public class MidwifeServiceIMPL implements MidwifeService {
     private PasswordEncoder passwordEncoder;
 
 
-//    @Override
-//    public String addMother(MotherDTO motherDTO) {
-//        OurUsers ourUsers = ourUsersRepo.findByEmail(motherDTO.getEmail())
-//                .orElse(new OurUsers());
-//
-//        //        Map data from MotherDTO to OurUsers entity
-//
-//        ourUsers.setEmail(motherDTO.getEmail());
-//        ourUsers.setFullName(motherDTO.getFullName());
-//        ourUsers.setNic(motherDTO.getNic());
-//        ourUsers.setContactNo(motherDTO.getContactNo());
-//
-//        //Set and hash the password using the mother's NIC
-//
-//        String hashedPassword =passwordEncoder.encode(motherDTO.getNic());
-//        ourUsers.setPassword(hashedPassword);
-//        ourUsers.setRole("MOTHER");
-//
-//        // Save the OurUsers entity
-//
-//        OurUsers savedMother = ourUsersRepo.save(ourUsers);
-//
-//
-//        //Map motherDTP to mother entity
-//        Mother mother = modelMapper.map(motherDTO,Mother.class);
-//        mother.setOurUsers(savedMother);
-////
-//
-//
-//
-//
-//
-//
-//
-//        return "ss";
-//    }
+    @Override
+    public ResponseDTO registerMother(OurUsersDTO ourUsersDTO) {
 
+        // Map OurUsersDTO to OurUsers entity
+        OurUsers newUser = modelMapper.map(ourUsersDTO,OurUsers.class);
+        newUser.setRole("MOTHER");
+        newUser.setPassword(passwordEncoder.encode(ourUsersDTO.getNic()));  // Set initial password to NIC
 
+        // Save the new user entity in OurUsers
+        OurUsers savedUser = ourUsersRepo.save(newUser);
+
+        //Create AntenatalRiskCondition
+        AntenatalRiskCondition antenatalRiskCondition = new AntenatalRiskCondition();
+        antenatalRiskCondition.setFullName(savedUser.getFullName());
+        antenatalRiskCondition.setAge(savedUser.getAge());
+        antenatalRiskCondition.setContactNo(savedUser.getContactNo());
+        antenatalRiskCondition.setAddress(savedUser.getAddress());
+
+        // Save the AntenatalRiskCondition entry
+        AntenatalRiskCondition savedRiskConditions = antenatalRiskConditionRepo.save(antenatalRiskCondition);
+
+        //Create and link Mother entity to OurUsers and AntenatalRiskCondition
+        Mother mother = new Mother();
+        mother.setNic(savedUser.getNic());
+        mother.setContactNo(savedUser.getContactNo());
+        mother.setStatus(0); // Expected Mother
+        mother.setOurUsers(savedUser);
+        mother.setAntenatalRiskCondition(savedRiskConditions);
+
+        //Save the Mother entity
+        Mother savedMother = motherRepo.save(mother);
+
+        //Prepare and return response
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseMzg("Mother registered successfully.");
+        return response;
+    }
 }

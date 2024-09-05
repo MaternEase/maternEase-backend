@@ -13,14 +13,17 @@ import java.util.List;
 
 
 @Entity
-@Table(name="ourusers")
-@Data
+@Table(name = "ourusers", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"id", "role"}) // Ensure uniqueness between id and role
+})@Data
 public class OurUsers implements UserDetails {
-    @EmbeddedId
-    private OurUsersId ourUsersId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", updatable = false, nullable = false)
+    private int id;  // Auto-generated id
 
-    @Column(length = 255, insertable = false, updatable = false)
-    private String role;
+    @Column(length = 255, nullable = false)
+    private String role;  // No longer part of the primary key
 
     @Column(  length = 255)
     private String fullName;

@@ -47,13 +47,13 @@ public class UserManagementController {
     }
 
     @GetMapping("/admin/get-user/{role}/{userId}")
-    public ResponseEntity<ReqRes> getUserById(@PathVariable String role, @PathVariable Integer userId) {
-        return ResponseEntity.ok(usersManagementService.getUsersById(role, userId));
+    public ResponseEntity<ReqRes> getUserById( @PathVariable Integer userId) {
+        return ResponseEntity.ok(usersManagementService.getUsersById( userId));
     }
 
     @PutMapping("/admin/update/{role}/{userId}")
-    public ResponseEntity<ReqRes> updateUser(@PathVariable String role, @PathVariable Integer userId, @RequestBody OurUsers reqres) {
-        return ResponseEntity.ok(usersManagementService.updateUser(role, userId, reqres));
+    public ResponseEntity<ReqRes> updateUser( @PathVariable Integer userId, @RequestBody OurUsers reqres) {
+        return ResponseEntity.ok(usersManagementService.updateUser( userId, reqres));
     }
 
     @GetMapping("/anyuser/get-profile")
@@ -65,7 +65,7 @@ public class UserManagementController {
     }
 
     @DeleteMapping("/admin/delete/{role}/{userId}")
-    public ResponseEntity<ReqRes> deleteUser(@PathVariable String role, @PathVariable Integer userId) {
-        return ResponseEntity.ok(usersManagementService.deleteUser(role, userId));
+    public ResponseEntity<ReqRes> deleteUser(@PathVariable Integer userId) {
+        return ResponseEntity.ok(usersManagementService.deleteUser( userId));
     }
 }

@@ -88,11 +88,10 @@ public class UsersManagementService {
         }
     }
 
-    public ReqRes getUsersById(String role,int id) {
+    public ReqRes getUsersById(int id) {
         ReqRes reqRes = new ReqRes();
         try {
-            OurUsersId ourUsersId = new OurUsersId(role, id);
-            OurUsers ourUsersById = ourUsersRepo.findById(ourUsersId).orElseThrow(() -> new RuntimeException("User Not Found"));
+            OurUsers ourUsersById = ourUsersRepo.findById(id).orElseThrow(() -> new RuntimeException("User Not Found"));
             reqRes.setOurUsers(ourUsersById);
             reqRes.setStatusCode(200);
             reqRes.setMassage("User with id '" + id + "' found successfully");
@@ -103,11 +102,10 @@ public class UsersManagementService {
         return reqRes;
     }
 
-    public ReqRes updateUser(String role, Integer userId, OurUsers updatedUser) {
+    public ReqRes updateUser(Integer userId, OurUsers updatedUser) {
         ReqRes reqRes = new ReqRes();
         try {
-            OurUsersId ourUsersId = new OurUsersId(role, userId);
-            Optional<OurUsers> userOptional = ourUsersRepo.findById(ourUsersId);
+            Optional<OurUsers> userOptional = ourUsersRepo.findById(userId);
             if (userOptional.isPresent()) {
                 OurUsers existingUser = userOptional.get();
                 existingUser.setEmail(updatedUser.getEmail());
@@ -165,19 +163,13 @@ public class UsersManagementService {
                 return resp;
             }
 
-//            Optional<OurUsers> existingUserByName = usersRepo.findByName(req.getName());
-//            if (existingUserByName.isPresent()) {
-//                resp.setStatusCode(400);
-//                resp.setMessage("Username is taken!");
-//                return resp;
-//            }
-
             Optional<OurUsers> existingUserByEmail = ourUsersRepo.findByEmail(req.getEmail());
             if (existingUserByEmail.isPresent()) {
                 resp.setStatusCode(400);
                 resp.setMassage("Email is already registered!");
                 return resp;
             }
+
             OurUsers ourUser = new OurUsers();
             ourUser.setEmail(req.getEmail());
             ourUser.setFullName(req.getFullName());
@@ -190,13 +182,13 @@ public class UsersManagementService {
             ourUser.setRole(req.getRole());
 
             OurUsers ourUsersResult = ourUsersRepo.save(ourUser);
-            if (ourUsersResult.getOurUsersId().getId()>0) {
+            if (ourUsersResult.getId() > 0) {
                 resp.setOurUsers((ourUsersResult));
                 resp.setMassage("User registered successfully");
                 resp.setStatusCode(200);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }
@@ -213,13 +205,6 @@ public class UsersManagementService {
                 return resp;
             }
 
-//            Optional<OurUsers> existingUserByName = usersRepo.findByName(req.getName());
-//            if (existingUserByName.isPresent()) {
-//                resp.setStatusCode(400);
-//                resp.setMessage("Username is taken!");
-//                return resp;
-//            }
-
             Optional<OurUsers> existingUserByEmail = ourUsersRepo.findByEmail(req.getEmail());
             if (existingUserByEmail.isPresent()) {
                 resp.setStatusCode(400);
@@ -228,20 +213,18 @@ public class UsersManagementService {
             }
 
             OurUsers ourUser = new OurUsers();
-            OurUsersId ourUsersId = new OurUsersId(req.getRole(), 0); // Assuming id is auto-generated
-
-            ourUser.setOurUsersId(ourUsersId);
+            ourUser.setRole(req.getRole());
             ourUser.setEmail(req.getEmail());
             ourUser.setPassword(passwordEncoder.encode(req.getPassword()));
 
             OurUsers ourUsersResult = ourUsersRepo.save(ourUser);
-            if (ourUsersResult.getOurUsersId().getId()>0) {
+            if (ourUsersResult.getId() > 0) {
                 resp.setOurUsers((ourUsersResult));
                 resp.setMassage("User registered successfully");
                 resp.setStatusCode(200);
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             resp.setStatusCode(500);
             resp.setError(e.getMessage());
         }
@@ -252,8 +235,8 @@ public class UsersManagementService {
         ReqRes reqRes = new ReqRes();
 
         try {
-            List<OurUsers> result = ourUsersRepo.findByRole( "MIDWIFE");
-            if (!result.isEmpty()){
+            List<OurUsers> result = ourUsersRepo.findByRole("MIDWIFE");
+            if (!result.isEmpty()) {
                 reqRes.setOurUsersList(result);
                 reqRes.setStatusCode(200);
                 reqRes.setMassage("Successful");
@@ -264,7 +247,7 @@ public class UsersManagementService {
             return reqRes;
         } catch (Exception e) {
             reqRes.setStatusCode(500);
-            reqRes.setMassage("Error occured: " + e.getMessage());
+            reqRes.setMassage("Error occurred: " + e.getMessage());
             return reqRes;
         }
     }
@@ -273,8 +256,8 @@ public class UsersManagementService {
         ReqRes reqRes = new ReqRes();
 
         try {
-            List<OurUsers> result = ourUsersRepo.findByRoleOrRoleOrRoleOrRoleOrRole( "ADMIN", "MOTHER", "DOCTOR", "MIDWIFE", "CHILD");
-            if (!result.isEmpty()){
+            List<OurUsers> result = ourUsersRepo.findByRoleOrRoleOrRoleOrRoleOrRole("ADMIN", "MOTHER", "DOCTOR", "MIDWIFE", "CHILD");
+            if (!result.isEmpty()) {
                 reqRes.setOurUsersList(result);
                 reqRes.setStatusCode(200);
                 reqRes.setMassage("Successful");
@@ -285,7 +268,7 @@ public class UsersManagementService {
             return reqRes;
         } catch (Exception e) {
             reqRes.setStatusCode(500);
-            reqRes.setMassage("Error occured: " + e.getMessage());
+            reqRes.setMassage("Error occurred: " + e.getMessage());
             return reqRes;
         }
     }
@@ -303,20 +286,19 @@ public class UsersManagementService {
                 reqRes.setMassage("User not found for update");
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             reqRes.setStatusCode(500);
             reqRes.setMassage("Error occurred while getting user info: " + e.getMessage());
         }
         return reqRes;
     }
 
-    public ReqRes deleteUser(String role, Integer userId) {
+    public ReqRes deleteUser(Integer userId) {
         ReqRes reqRes = new ReqRes();
         try {
-            OurUsersId ourUsersId = new OurUsersId(role, userId);
-            Optional<OurUsers> userOptional = ourUsersRepo.findById(ourUsersId);
+            Optional<OurUsers> userOptional = ourUsersRepo.findById(userId);
             if (userOptional.isPresent()) {
-                ourUsersRepo.deleteById(ourUsersId);
+                ourUsersRepo.deleteById(userId);
                 reqRes.setStatusCode(200);
                 reqRes.setMassage("User deleted successfully");
             } else {
@@ -329,6 +311,5 @@ public class UsersManagementService {
         }
         return reqRes;
     }
-
 }
 
