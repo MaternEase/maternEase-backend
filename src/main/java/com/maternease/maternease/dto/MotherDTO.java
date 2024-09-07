@@ -11,8 +11,10 @@ public class MotherDTO {
     private int cardId;
     private String clinicId;
     private String contactNo;
-    private int status;
+    private boolean status;
     private String nic;
+    private boolean riskCondition;
+    private boolean refdoc;
     private OurUsersDTO ourUsers;
     private AntenatalRiskConditionDTO antenatalRiskCondition;
 }

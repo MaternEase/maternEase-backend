@@ -3,6 +3,7 @@ package com.maternease.maternease.service.IMPL;
 import com.maternease.maternease.dto.MotherDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.response.EMotherTableDTO;
 import com.maternease.maternease.entity.AntenatalRiskCondition;
 import com.maternease.maternease.entity.Mother;
 import com.maternease.maternease.entity.OurUsers;
@@ -14,6 +15,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MidwifeServiceIMPL implements MidwifeService {
@@ -71,4 +75,24 @@ public class MidwifeServiceIMPL implements MidwifeService {
         response.setResponseMzg("Mother registered successfully.");
         return response;
     }
+
+    @Override
+    public List<EMotherTableDTO> getAllExpectedMother() {
+        List<Mother> expectedMothers = motherRepo.findAllByStatus(0);
+
+        return expectedMothers.stream().map(mother -> {
+            EMotherTableDTO eMotherTableDTO = new EMotherTableDTO();
+
+            // Map the relevant fields from the Mother entity to the DTO
+            eMotherTableDTO.setMotherId(mother.getMotherId());
+            eMotherTableDTO.setName(mother.getOurUsers().getFullName());
+            eMotherTableDTO.setAge(mother.getOurUsers().getAge());
+            eMotherTableDTO.setCondition(mother.isRiskCondition());
+            eMotherTableDTO.setReferToDoctor(mother.isRefdoc()); // Refer to doctor if refdoc is greater than 0
+            eMotherTableDTO.setContactNo(mother.getContactNo());  // Assuming you need to fetch this date from somewhere
+
+            return eMotherTableDTO;
+        }).collect(Collectors.toList());
+    }
+
 }

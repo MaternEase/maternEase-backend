@@ -17,6 +17,8 @@ public class Mother {
     private String contactNo;
     private int status;
     private String nic;
+    private boolean riskCondition;
+    private boolean refdoc;
 
     @OneToOne
     @JoinColumns({
