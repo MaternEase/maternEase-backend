@@ -3,6 +3,7 @@ package com.maternease.maternease.service.IMPL;
 import com.maternease.maternease.dto.MotherDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
 import com.maternease.maternease.entity.AntenatalRiskCondition;
 import com.maternease.maternease.entity.Mother;
@@ -92,6 +93,24 @@ public class MidwifeServiceIMPL implements MidwifeService {
             eMotherTableDTO.setContactNo(mother.getContactNo());  // Assuming you need to fetch this date from somewhere
 
             return eMotherTableDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DMotherTableDTO> getAllDeliveredMother() {
+        List<Mother> deliveredMothers =motherRepo.findAllByStatus(1);
+        return deliveredMothers.stream().map(mother -> {
+            DMotherTableDTO dMotherTableDTO = new DMotherTableDTO();
+
+//            // Map the relevant fields from the Mother entity to the DTO
+            dMotherTableDTO.setMotherId(mother.getMotherId());
+            dMotherTableDTO.setName(mother.getOurUsers().getFullName());
+            dMotherTableDTO.setAge(mother.getOurUsers().getAge());
+            dMotherTableDTO.setCondition(mother.isRiskCondition());
+            dMotherTableDTO.setReferToDoctor(mother.isRefdoc()); // Refer to doctor if refdoc is greater than 0
+            dMotherTableDTO.setDelivered_date(mother.getDelivered_date());
+
+            return dMotherTableDTO;
         }).collect(Collectors.toList());
     }
 

@@ -3,6 +3,7 @@ package com.maternease.maternease.service;
 import com.maternease.maternease.dto.MotherDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -13,4 +14,6 @@ public interface MidwifeService {
 
 
     List<EMotherTableDTO> getAllExpectedMother();
+
+    List<DMotherTableDTO> getAllDeliveredMother();
 }

@@ -19,6 +19,7 @@ public class Mother {
     private String nic;
     private boolean riskCondition;
     private boolean refdoc;
+    private Date delivered_date;
 
     @OneToOne
     @JoinColumns({

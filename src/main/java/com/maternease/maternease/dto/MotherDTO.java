@@ -15,6 +15,7 @@ public class MotherDTO {
     private String nic;
     private boolean riskCondition;
     private boolean refdoc;
+    private Date delivered_date;
     private OurUsersDTO ourUsers;
     private AntenatalRiskConditionDTO antenatalRiskCondition;
 }

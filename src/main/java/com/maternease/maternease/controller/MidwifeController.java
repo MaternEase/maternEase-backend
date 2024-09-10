@@ -3,6 +3,7 @@ package com.maternease.maternease.controller;
 import com.maternease.maternease.dto.MotherDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
 import com.maternease.maternease.entity.OurUsers;
 import com.maternease.maternease.service.MidwifeService;
@@ -35,5 +36,11 @@ public class MidwifeController {
     public List<EMotherTableDTO> getAllExpectedMother(){
         List<EMotherTableDTO>  allEMotherTableDTO = midwifeService.getAllExpectedMother();
         return allEMotherTableDTO;
+    }
+
+    @GetMapping(path = "/get-all-delivered-mother")
+    public List<DMotherTableDTO> getAllDeliveredMother(){
+        List<DMotherTableDTO> allDMotherTableDTO = midwifeService.getAllDeliveredMother();
+        return allDMotherTableDTO;
     }
 }
