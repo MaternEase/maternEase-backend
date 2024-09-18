@@ -39,6 +39,36 @@ public class MidwifeServiceIMPL implements MidwifeService {
     private PasswordEncoder passwordEncoder;
 
 
+    public String generateMotherId() {
+        // Find the latest Mother based on ID in descending order
+        Mother latestMother = motherRepo.findTopByOrderByMotherIdDesc();
+
+        // Default value if no existing record is found
+        int newIdNumber = 1;
+
+        // If a record exists, parse the numeric part and increment it
+        if (latestMother != null) {
+            String lastId = latestMother.getMotherId(); // Example: AS256
+
+            // Ensure that the string is at least 2 characters long (for the "AS" prefix)
+            if (lastId != null && lastId.length() > 2) {
+                try {
+                    String numericPart = lastId.substring(2); // Extract the numeric part "256"
+                    newIdNumber = Integer.parseInt(numericPart) + 1;
+                } catch (NumberFormatException e) {
+                    // Handle the case where the numeric part is not a valid number
+                    System.out.println("Error parsing numeric part of motherId: " + lastId);
+                }
+            }
+        }
+
+        // Return the new ID, prefixing with "AS"
+        return "AS" + newIdNumber;
+    }
+
+
+
+
     @Override
     public ResponseDTO registerMother(OurUsersDTO ourUsersDTO) {
 
@@ -62,6 +92,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
         //Create and link Mother entity to OurUsers and AntenatalRiskCondition
         Mother mother = new Mother();
+        mother.setMotherId(generateMotherId()); // Generate custom motherId
         mother.setNic(savedUser.getNic());
         mother.setContactNo(savedUser.getContactNo());
         mother.setStatus(0); // Expected Mother

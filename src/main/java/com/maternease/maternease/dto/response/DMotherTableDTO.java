@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class DMotherTableDTO {
-    private int motherId;
+    private String motherId;
     private String name; // Full name of the user
     private int age; // Age of the mother
     private Date delivered_date;

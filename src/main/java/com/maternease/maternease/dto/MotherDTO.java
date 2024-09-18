@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class MotherDTO {
-    private int motherId;
+    private String motherId;
     private int cardId;
     private String clinicId;
     private String contactNo;

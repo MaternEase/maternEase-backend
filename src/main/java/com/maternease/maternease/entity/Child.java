@@ -11,7 +11,7 @@ import java.util.Date;
 public class Child {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int childId;
+    private String childId;
 
     private String firstName;
     private String lastName;

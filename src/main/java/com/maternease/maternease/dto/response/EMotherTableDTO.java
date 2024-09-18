@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class EMotherTableDTO {
-    private int motherId;
+    private String motherId;
     private String name; // Full name of the user
     private int age; // Age of the mother
     private boolean condition; // Risky or Non-Risky

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface MotherRepo extends JpaRepository<Mother,Integer> {
     List<Mother> findAllByStatus(int status);
+
+    Mother findTopByOrderByMotherIdDesc();
 }

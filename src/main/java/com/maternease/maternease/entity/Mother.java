@@ -10,8 +10,7 @@ import java.util.Date;
 @Data
 public class Mother {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int motherId;
+    private String motherId;
     private int cardId;
     private String clinicId;
     private String contactNo;
