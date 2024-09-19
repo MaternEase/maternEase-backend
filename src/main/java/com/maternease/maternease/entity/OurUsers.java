@@ -56,6 +56,9 @@ public class OurUsers implements UserDetails {
     @Column
     private int age;
 
+    @Column(length = 255, nullable = true)
+    private String childId;
+
 
 
     @Override

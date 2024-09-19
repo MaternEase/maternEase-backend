@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MotherRepo extends JpaRepository<Mother,Integer> {
+public interface MotherRepo extends JpaRepository<Mother,String> {
     List<Mother> findAllByStatus(int status);
 
     Mother findTopByOrderByMotherIdDesc();

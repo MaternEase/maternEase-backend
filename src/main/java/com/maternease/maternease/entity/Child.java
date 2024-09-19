@@ -11,7 +11,7 @@ import java.util.Date;
 public class Child {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String childId;
+    private int Id;
 
     private String firstName;
     private String lastName;
@@ -19,6 +19,18 @@ public class Child {
     private String gender;
     private String bloodGroup;
     private String status;
+
+    @OneToOne
+    @JoinColumns({
+            @JoinColumn(name = "user_role", referencedColumnName = "role"),
+            @JoinColumn(name = "user_id", referencedColumnName = "id")
+    })
+    private OurUsers ourUsers;
+
+    @OneToOne
+    @JoinColumn(name = "child_profile_id", referencedColumnName = "id")
+    private ChildProfile childProfile;
+
 
 //    @ManyToOne
 //    @JoinColumn(name = "mother_id")
