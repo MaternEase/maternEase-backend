@@ -10,7 +10,6 @@ import java.util.Date;
 @Data
 public class Child {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
     private String guardianName;
@@ -32,6 +31,22 @@ public class Child {
     @OneToOne
     @JoinColumn(name = "immunization_id", referencedColumnName = "id")
     private Immunization immunization;
+
+    @OneToOne
+    @JoinColumn(name = "health_chart_id", referencedColumnName = "id")
+    private HealthChart healthChart;
+
+    @OneToOne
+    @JoinColumn(name = "child_vision_id", referencedColumnName = "id")
+    private ChildVision childVision;
+
+    @OneToOne
+    @JoinColumn(name = "child_hearing_id", referencedColumnName = "id")
+    private ChildHearing childHearing;
+
+    @OneToOne
+    @JoinColumn(name = "child_teeth_id", referencedColumnName = "id")
+    private ChildTeeth childTeeth;
 
 //    @ManyToOne
 //    @JoinColumn(name = "mother_id")
