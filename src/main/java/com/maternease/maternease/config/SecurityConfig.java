@@ -39,7 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/midwife/**").hasAnyAuthority("MIDWIFE")
                         .requestMatchers("/doctor/**").hasAnyAuthority("DOCTOR")
                         .requestMatchers("/mother/**").hasAnyAuthority("MOTHER")
-                        .requestMatchers("/child/**").hasAnyAuthority("CHILD")
+                        .requestMatchers("/child/**").hasAnyAuthority("CHILD","MIDWIFE")
                         .requestMatchers("/anyuser/**").hasAnyAuthority("ADMIN", "MIDWIFE", "DOCTOR","MOTHER","CHILD")
                         .anyRequest().authenticated()
                 )

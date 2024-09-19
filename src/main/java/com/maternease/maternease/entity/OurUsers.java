@@ -67,11 +67,20 @@ public class OurUsers implements UserDetails {
         return List.of(new SimpleGrantedAuthority(role));
     }
 
-
     @Override
     public String getUsername() {
-        return this.email;
+        if ("CHILD".equalsIgnoreCase(this.role) && this.childId != null) {
+            return this.childId;
+        } else {
+            return this.email;
+        }
     }
+
+
+//    @Override
+//    public String getUsername() {
+//        return this.email;
+//    }
 
     @Override
     public boolean isAccountNonExpired() {

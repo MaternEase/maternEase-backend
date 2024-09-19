@@ -29,27 +29,84 @@ public class UsersManagementService {
     private PasswordEncoder passwordEncoder;
 
 
+//    public ReqRes login(ReqRes loginRequest) {
+//        ReqRes response = new ReqRes();
+//        try {
+////            Optional<OurUsers> existingUserByEmail = ourUsersRepo.findByEmail(loginRequest.getEmail());
+////            if (!existingUserByEmail.isPresent()) {
+////                response.setStatusCode(400);
+////                response.setMassage("Email not exists!");
+////                return response;
+////            }
+//
+//            Optional<OurUsers> existingUser = ourUsersRepo.findByEmail(loginRequest.getEmail());
+//            if (!existingUser.isPresent()) {
+//                existingUser = ourUsersRepo.findByChildId(loginRequest.getChildId());
+//            }
+//
+//            if (!existingUser.isPresent()) {
+//                response.setStatusCode(400);
+//                response.setMassage("Email or Child ID not found!");
+//                return response;
+//            }
+//
+//
+//            try {
+//                authenticationManager.authenticate(
+//                        new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
+//                );
+//            } catch (BadCredentialsException e) {
+//                response.setStatusCode(400);
+//                response.setMassage("Incorrect password!");
+//                return response;
+//            }
+//
+//            var user = ourUsersRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
+//            var jwt = jwtUtils.generateToken(user);
+//            var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
+//            response.setStatusCode(200);
+//            response.setToken(jwt);
+//            response.setRole(user.getRole());
+//            response.setRefreshToken(refreshToken);
+//            response.setExpirationTime("24Hrs");
+//            response.setMassage("Successfully logged in");
+//
+//        } catch (Exception e) {
+//            response.setStatusCode(500);
+//            response.setMassage(e.getMessage());
+//        }
+//        return response;
+//    }
+
+
     public ReqRes login(ReqRes loginRequest) {
         ReqRes response = new ReqRes();
         try {
-            Optional<OurUsers> existingUserByEmail = ourUsersRepo.findByEmail(loginRequest.getEmail());
-            if (!existingUserByEmail.isPresent()) {
+            Optional<OurUsers> existingUser = Optional.empty();
+
+            // First check if the login request is for a child (using childId)
+            if (loginRequest.getChildId() != null && !loginRequest.getChildId().isEmpty()) {
+                existingUser = ourUsersRepo.findByChildId(loginRequest.getChildId());
+            }
+
+            // If not a child login, check by email
+            if (!existingUser.isPresent() && loginRequest.getEmail() != null && !loginRequest.getEmail().isEmpty()) {
+                existingUser = ourUsersRepo.findByEmail(loginRequest.getEmail());
+            }
+
+            if (!existingUser.isPresent()) {
                 response.setStatusCode(400);
-                response.setMassage("Email not exists!");
+                response.setMassage("Email or Child ID not found!");
                 return response;
             }
 
-            try {
-                authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-                );
-            } catch (BadCredentialsException e) {
-                response.setStatusCode(400);
-                response.setMassage("Incorrect password!");
-                return response;
-            }
+            // Authenticate using either email or childId
+            String loginIdentifier = loginRequest.getChildId() != null ? loginRequest.getChildId() : loginRequest.getEmail();
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginIdentifier, loginRequest.getPassword())
+            );
 
-            var user = ourUsersRepo.findByEmail(loginRequest.getEmail()).orElseThrow();
+            var user = existingUser.orElseThrow();
             var jwt = jwtUtils.generateToken(user);
             var refreshToken = jwtUtils.generateRefreshToken(new HashMap<>(), user);
             response.setStatusCode(200);
@@ -65,6 +122,8 @@ public class UsersManagementService {
         }
         return response;
     }
+
+
 
     public ReqRes refreshToken(ReqRes refreshTokenReqiest) {
         ReqRes response = new ReqRes();

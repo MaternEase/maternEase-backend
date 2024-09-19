@@ -20,7 +20,7 @@ public class ReqRes {
     private String expirationTime;
     private String email;
     private String fullName;
-//    private String lastName;
+    //    private String lastName;
     private String nic;
     private Byte status;
     private Date createdAt;
@@ -33,8 +33,9 @@ public class ReqRes {
     private Date dob;
     private String gender;
     private String role;
+    private String childId;
     private OurUsers ourUsers;
     private List<OurUsers> ourUsersList;
 
-
 }
+

@@ -15,4 +15,6 @@ public interface OurUsersRepo extends JpaRepository<OurUsers, Integer> {
     List<OurUsers> findByRoleOrRoleOrRoleOrRoleOrRole(String admin, String mother, String doctor, String midwife, String child);
 
     List<OurUsers> findByRole(String midwife);
+
+    Optional<OurUsers> findByChildId(String childId);  // Added method for child login
 }
