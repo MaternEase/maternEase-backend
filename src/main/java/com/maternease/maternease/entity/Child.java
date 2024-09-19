@@ -13,10 +13,8 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int Id;
 
-    private String firstName;
-    private String lastName;
-    private Date dob;
-    private String gender;
+    private String guardianName;
+    private String gRelationship;
     private String bloodGroup;
     private String status;
 
@@ -31,6 +29,9 @@ public class Child {
     @JoinColumn(name = "child_profile_id", referencedColumnName = "id")
     private ChildProfile childProfile;
 
+    @OneToOne
+    @JoinColumn(name = "immunization_id", referencedColumnName = "id")
+    private Immunization immunization;
 
 //    @ManyToOne
 //    @JoinColumn(name = "mother_id")
