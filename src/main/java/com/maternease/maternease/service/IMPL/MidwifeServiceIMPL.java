@@ -5,17 +5,15 @@ import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
-import com.maternease.maternease.entity.AntenatalRiskCondition;
-import com.maternease.maternease.entity.Mother;
-import com.maternease.maternease.entity.OurUsers;
-import com.maternease.maternease.repository.AntenatalRiskConditionRepo;
-import com.maternease.maternease.repository.MotherRepo;
-import com.maternease.maternease.repository.OurUsersRepo;
+import com.maternease.maternease.entity.*;
+import com.maternease.maternease.exception.MotherNotFoundException;
+import com.maternease.maternease.repository.*;
 import com.maternease.maternease.service.MidwifeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,6 +29,18 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
     @Autowired
     private OurUsersRepo ourUsersRepo;
+
+    @Autowired
+    private ChildProfileRepo childProfileRepo;
+
+    @Autowired
+    private ImmunizationRepo immunizationRepo;
+
+    @Autowired
+    private HealthChartRepo healthChartRepo;
+
+    @Autowired
+    private ChildRepo childRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -64,6 +74,17 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
         // Return the new ID, prefixing with "AS"
         return "AS" + newIdNumber;
+    }
+
+    private String generateChildId(String motherId) {
+        // Find the number of children already associated with this motherId
+        int childCount = childRepo.countByMotherId(motherId);
+
+        // Increment the count to generate the next child number
+        int nextChildNumber = childCount + 1;
+
+        // Combine the motherId with the nextChildNumber to form the childId
+        return motherId + "/" + nextChildNumber;
     }
 
 
@@ -108,6 +129,83 @@ public class MidwifeServiceIMPL implements MidwifeService {
         return response;
     }
 
+
+
+    @Override
+    public ResponseDTO registerChild(OurUsersDTO ourUsersDTO) {
+
+        // Check if the mother exists
+        String motherName = findMotherName(ourUsersDTO.getMotherId());
+
+        if (motherName == null) {
+            throw new MotherNotFoundException("Mother not found with ID: " + ourUsersDTO.getMotherId());
+        }
+
+        // Generate the custom childId
+        String childID = generateChildId(ourUsersDTO.getMotherId());
+
+
+        // Manually map fields from OurUsersDTO to OurUsers entity
+        OurUsers newUser = new OurUsers();
+        newUser.setFullName(ourUsersDTO.getFullName());
+        newUser.setRole("CHILD");
+        newUser.setPassword(passwordEncoder.encode(ourUsersDTO.getNic())); // Encode NIC as password
+        newUser.setNic(ourUsersDTO.getNic());
+        newUser.setAddress(ourUsersDTO.getAddress());
+        newUser.setContactNo(ourUsersDTO.getContactNo());
+        newUser.setGender(ourUsersDTO.getGender());
+        newUser.setDob(ourUsersDTO.getDob());
+        newUser.setAge(ourUsersDTO.getAge());
+        newUser.setChildId(childID); // Assign childId
+
+        OurUsers savedChild = ourUsersRepo.save(newUser);
+
+
+        //Create ChildProfile entity and save it
+
+        ChildProfile childProfile = new ChildProfile();
+
+        childProfile.setBabyName(savedChild.getFullName());
+        childProfile.setMotherName(motherName);
+        ChildProfile savedChildProfile = childProfileRepo.save(childProfile);
+
+        // Create Immunization entity and save it
+        Immunization immunization = new Immunization();
+        Immunization savedImmunization = immunizationRepo.save(immunization);
+
+        // Create HealthChart entity and save it
+        HealthChart healthChart = new HealthChart();
+        HealthChart savedHealthChart = healthChartRepo.save(healthChart);
+
+        // Create Child entity and link to OurUsers and other child-related entities
+        Child child = new Child();
+        child.setGuardianName(ourUsersDTO.getGuardianName());
+        child.setBirth_order(ourUsersDTO.getBirth_order());
+        child.setMotherId(ourUsersDTO.getMotherId());
+        child.setOurUsers(savedChild);
+        child.setChildProfile(savedChildProfile);
+        child.setImmunization(savedImmunization);
+        child.setHealthChart(savedHealthChart);
+
+        // Save the Child entity
+        Child savedChild1 = childRepo.save(child);
+
+        // Prepare and return success response
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("200");
+        response.setResponseMzg("Child registered successfully.");
+        return response;
+    }
+
+    private String findMotherName(String motherId) {
+        return motherRepo.findByMotherId(motherId)
+                .map(Mother::getOurUsers)
+                .map(OurUsers::getFullName)
+                .orElse(null);
+    }
+
+
+
     @Override
     public List<EMotherTableDTO> getAllExpectedMother() {
         List<Mother> expectedMothers = motherRepo.findAllByStatus(0);
@@ -144,5 +242,6 @@ public class MidwifeServiceIMPL implements MidwifeService {
             return dMotherTableDTO;
         }).collect(Collectors.toList());
     }
+
 
 }

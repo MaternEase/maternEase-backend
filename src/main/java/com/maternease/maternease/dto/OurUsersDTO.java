@@ -1,5 +1,7 @@
 package com.maternease.maternease.dto;
 
+
+
 import lombok.Data;
 
 import java.util.Date;
@@ -17,4 +19,11 @@ public class OurUsersDTO {
     private String gender;
     private Date dob;
     private int age;
+    private String motherId;
+    private int birth_order;
+    private String clinicId;
+    private String guardianName;
+
+
+    private ClinicDTO clinic;
 }

@@ -16,4 +16,6 @@ public interface MidwifeService {
     List<EMotherTableDTO> getAllExpectedMother();
 
     List<DMotherTableDTO> getAllDeliveredMother();
+
+    ResponseDTO registerChild(OurUsersDTO ourUsersDTO);
 }

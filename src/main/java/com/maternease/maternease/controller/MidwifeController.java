@@ -43,4 +43,10 @@ public class MidwifeController {
         List<DMotherTableDTO> allDMotherTableDTO = midwifeService.getAllDeliveredMother();
         return allDMotherTableDTO;
     }
+
+    @PostMapping(path = "/child-register")
+    public ResponseEntity<ResponseDTO> registerChild(@RequestBody OurUsersDTO ourUsersDTO ){
+        ResponseDTO response = midwifeService.registerChild(ourUsersDTO);
+        return ResponseEntity.ok(response);
+    }
 }

@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ChildRepo extends JpaRepository<Child,Integer> {
+    int countByMotherId(String motherId);
 }

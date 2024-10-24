@@ -10,12 +10,15 @@ import java.util.Date;
 @Data
 public class Child {
     @Id
-    private int Id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
     private String guardianName;
     private String gRelationship;
     private String bloodGroup;
     private String status;
+    private String motherId;
+    private int birth_order;
 
     @OneToOne
     @JoinColumns({

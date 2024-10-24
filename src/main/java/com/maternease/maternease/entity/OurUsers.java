@@ -59,6 +59,11 @@ public class OurUsers implements UserDetails {
     @Column(length = 255, nullable = true)
     private String childId;
 
+    @ManyToOne
+    @JoinColumn(name = "clinic_id", referencedColumnName = "clinicId")
+    private Clinic clinic;
+
+
 
 
     @Override

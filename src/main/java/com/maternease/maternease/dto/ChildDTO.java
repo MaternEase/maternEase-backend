@@ -12,6 +12,8 @@ public class ChildDTO {
     private String gRelationship;
     private String bloodGroup;
     private String status;
+    private String motherId;
+    private int birth_order;
 
     private OurUsersDTO ourUsers;
     private ChildProfileDTO childProfile;
