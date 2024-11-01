@@ -1,11 +1,10 @@
 package com.maternease.maternease.controller;
 
-import com.maternease.maternease.dto.MotherDTO;
+import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
-import com.maternease.maternease.entity.OurUsers;
 import com.maternease.maternease.service.MidwifeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,4 +48,24 @@ public class MidwifeController {
         ResponseDTO response = midwifeService.registerChild(ourUsersDTO);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping(path ="/get-antenatal-risk-assessment-details/{motherId}")
+    public ResponseEntity<AntenatalRiskConditionDTO> getAntenatalRiskAssessmentDetails(@PathVariable String motherId) {
+        AntenatalRiskConditionDTO assessmentDetails = midwifeService.getAntenatalRiskAssessmentDetails(motherId);
+        return ResponseEntity.ok(assessmentDetails);
+    }
+
+//    others data can be get use this /get-antenatal-risk-assessment-details/{motherId} like wise
+
+//    ...................................................................
+
+    @PutMapping(path = "/update-antenatal-risk-assessment-details/{motherId}")
+    public ResponseEntity<ResponseDTO> updateAntenatalRiskAssessmentDetails(
+            @PathVariable String motherId,
+            @RequestBody AntenatalRiskConditionDTO antenatalRiskConditionDTO) {
+
+        ResponseDTO updatedDetails = midwifeService.updateAntenatalRiskAssessmentDetails(motherId, antenatalRiskConditionDTO);
+        return ResponseEntity.ok(updatedDetails);
+    }
+
 }

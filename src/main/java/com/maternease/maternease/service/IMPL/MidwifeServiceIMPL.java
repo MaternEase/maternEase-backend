@@ -1,6 +1,6 @@
 package com.maternease.maternease.service.IMPL;
 
-import com.maternease.maternease.dto.MotherDTO;
+import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -196,6 +197,53 @@ public class MidwifeServiceIMPL implements MidwifeService {
         response.setResponseMzg("Child registered successfully.");
         return response;
     }
+
+
+
+
+
+
+
+    @Override
+    public AntenatalRiskConditionDTO getAntenatalRiskAssessmentDetails(String motherId) {
+
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+
+        Integer arConditionId = mother.getAntenatalRiskCondition().getId();
+
+        Optional<AntenatalRiskCondition> antenatalRiskCondition = antenatalRiskConditionRepo.findById(arConditionId);
+
+        return modelMapper.map(antenatalRiskCondition, AntenatalRiskConditionDTO.class);
+
+
+
+    }
+
+    @Override
+    public ResponseDTO updateAntenatalRiskAssessmentDetails(String motherId, AntenatalRiskConditionDTO antenatalRiskConditionDTO) {
+
+        // Configure ModelMapper locally to skip 'id' field
+        modelMapper.typeMap(AntenatalRiskConditionDTO.class, AntenatalRiskCondition.class)
+                .addMappings(mapper -> mapper.skip(AntenatalRiskCondition::setId));
+
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+
+        AntenatalRiskCondition antenatalRiskCondition = mother.getAntenatalRiskCondition();
+//        Optional<AntenatalRiskCondition> antenatalRiskCondition = antenatalRiskConditionRepo.findById(arConditionId);
+
+        modelMapper.map(antenatalRiskConditionDTO, antenatalRiskCondition);
+
+        antenatalRiskConditionRepo.save(antenatalRiskCondition);
+
+// Prepare and return success response
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("200");
+        response.setResponseMzg("Update data  successfully.");
+        return response;
+    }
+
 
     private String findMotherName(String motherId) {
         return motherRepo.findByMotherId(motherId)
