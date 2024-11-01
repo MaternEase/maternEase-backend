@@ -28,4 +28,5 @@ public class AntenatalRiskConditionDTO {
     private Boolean prePregnancyScreeningDone;
     private Boolean preconceptionalFolicAcid;
     private Boolean historyOfSubFertility;
+    private String antenatalRiskConditions;
 }

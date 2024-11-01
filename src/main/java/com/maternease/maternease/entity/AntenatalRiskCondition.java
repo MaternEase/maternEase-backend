@@ -76,4 +76,7 @@ public class AntenatalRiskCondition {
     @Column(name = "history_of_sub_fertility")
     private Boolean historyOfSubFertility;
 
+    @Column(name = "antenatalRiskConditions")
+    private String antenatalRiskConditions;
+
 }
