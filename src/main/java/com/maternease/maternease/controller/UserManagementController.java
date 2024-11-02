@@ -9,55 +9,63 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+
 @RestController
+@RequestMapping
 public class UserManagementController {
     @Autowired
     private UsersManagementService usersManagementService;
 
-    @PostMapping("/auth/register")
-    public ResponseEntity<ReqRes> register(@RequestBody ReqRes reg){
-        return ResponseEntity.ok(usersManagementService.register(reg));
+    @PostMapping("/auth/midwife-register")
+    public ResponseEntity<ReqRes> midwifeRegister(@RequestBody ReqRes req) {
+        return ResponseEntity.ok(usersManagementService.midwifeRegister(req));
+    }
+
+    @PostMapping("/auth/doctor-register")
+    public ResponseEntity<ReqRes> doctorRegister(@RequestBody ReqRes req) {
+        return ResponseEntity.ok(usersManagementService.doctorRegister(req));
     }
 
     @PostMapping("/auth/login")
-    public ResponseEntity<ReqRes> login(@RequestBody ReqRes req){
+    public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
         return ResponseEntity.ok(usersManagementService.login(req));
     }
 
     @PostMapping("/auth/refresh")
-    public ResponseEntity<ReqRes> refreshToken(@RequestBody ReqRes req){
+    public ResponseEntity<ReqRes> refreshToken(@RequestBody ReqRes req) {
         return ResponseEntity.ok(usersManagementService.refreshToken(req));
     }
 
-//    @GetMapping("/admin/get-all-users")
-//    public ResponseEntity<ReqRes> getAllUsers(){
-//        return ResponseEntity.ok(usersManagementService.getAllUsers());
-//
-//    }
-
-    @GetMapping("/admin/get-users/{userId}")
-    public ResponseEntity<ReqRes> getUserByID(@PathVariable Integer userId){
-        return ResponseEntity.ok(usersManagementService.getUsersById(userId));
-
+    @GetMapping("/admin/get-all-midwifes")
+    public ResponseEntity<ReqRes> getAllMidwifes() {
+        return ResponseEntity.ok(usersManagementService.getAllMidwifes());
     }
 
-    @PutMapping("/admin/update/{userId}")
-    public ResponseEntity<ReqRes> updateUser(@PathVariable Integer userId, @RequestBody OurUsers reqres){
-        return ResponseEntity.ok(usersManagementService.updateUser(userId, reqres));
+    @GetMapping("/admin/get-all-doctors")
+    public ResponseEntity<ReqRes> getAllDoctors() {
+        return ResponseEntity.ok(usersManagementService.getAllDoctors());
     }
 
-//    @GetMapping("/adminuser/get-profile")
-//    public ResponseEntity<ReqRes> getMyProfile(){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        String email = authentication.getName();
-//        ReqRes response = usersManagementService.getMyInfo(email);
-//        return  ResponseEntity.status(response.getStatusCode()).body(response);
-//    }
+    @GetMapping("/admin/get-user/{role}/{userId}")
+    public ResponseEntity<ReqRes> getUserById( @PathVariable Integer userId) {
+        return ResponseEntity.ok(usersManagementService.getUsersById( userId));
+    }
 
-//    @DeleteMapping("/admin/delete/{userId}")
-//    public ResponseEntity<ReqRes> deleteUSer(@PathVariable Integer userId){
-//        return ResponseEntity.ok(usersManagementService.deleteUser(userId));
-//    }
+    @PutMapping("/admin/update/{role}/{userId}")
+    public ResponseEntity<ReqRes> updateUser( @PathVariable Integer userId, @RequestBody OurUsers reqres) {
+        return ResponseEntity.ok(usersManagementService.updateUser( userId, reqres));
+    }
 
+    @GetMapping("/anyuser/get-profile")
+    public ResponseEntity<ReqRes> getMyProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        ReqRes response = usersManagementService.getMyInfo(email);
+        return ResponseEntity.status(response.getStatusCode()).body(response);
+    }
 
+    @DeleteMapping("/admin/delete/{role}/{userId}")
+    public ResponseEntity<ReqRes> deleteUser(@PathVariable Integer userId) {
+        return ResponseEntity.ok(usersManagementService.deleteUser( userId));
+    }
 }
