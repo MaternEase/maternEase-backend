@@ -8,6 +8,7 @@ import java.util.Date;
 
 @Data
 public class OurUsersDTO {
+
     private OurUsersIdDTO ourUsersId;
     private String fullName;
     private String email;
@@ -23,6 +24,7 @@ public class OurUsersDTO {
     private int birth_order;
     private String clinicId;
     private String guardianName;
+    private String clinicName;
 
 
     private ClinicDTO clinic;

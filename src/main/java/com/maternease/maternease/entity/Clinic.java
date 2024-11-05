@@ -16,14 +16,15 @@ public class Clinic {
     private String gramaniDivison;
     private String MOHArea;
     private String PHMArea;
+    private String clinicName;
 
 //    @OneToMany(mappedBy = "clinic")
 //    private List<Users> users;
 
-    @ManyToOne
-    @JoinColumn(name = "admin_id")
-    private Admin admin;
-
-    @OneToMany(mappedBy = "clinic")
-    private List<ClinicAttendee> attendees;
+//    @ManyToOne
+//    @JoinColumn(name = "admin_id")
+//    private Admin admin;
+//
+//    @OneToMany(mappedBy = "clinic")
+//    private List<ClinicAttendee> attendees;
 }
