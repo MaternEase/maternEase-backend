@@ -59,9 +59,12 @@ public class OurUsers implements UserDetails {
     @Column(length = 255, nullable = true)
     private String childId;
 
-    @ManyToOne
-    @JoinColumn(name = "clinic_id", referencedColumnName = "clinicId")
-    private Clinic clinic;
+    @Column(length = 255, nullable = true)
+    private String clinicName;
+
+//    @ManyToOne
+//    @JoinColumn(name = "clinic_id", referencedColumnName = "clinicId")
+//    private Clinic clinic;
 
 
 
@@ -106,4 +109,6 @@ public class OurUsers implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+
 }
