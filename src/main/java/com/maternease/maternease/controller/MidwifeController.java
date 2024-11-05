@@ -63,7 +63,6 @@ public class MidwifeController {
     public ResponseEntity<ResponseDTO> updateAntenatalRiskAssessmentDetails(
             @PathVariable String motherId,
             @RequestBody AntenatalRiskConditionDTO antenatalRiskConditionDTO) {
-
         ResponseDTO updatedDetails = midwifeService.updateAntenatalRiskAssessmentDetails(motherId, antenatalRiskConditionDTO);
         return ResponseEntity.ok(updatedDetails);
     }

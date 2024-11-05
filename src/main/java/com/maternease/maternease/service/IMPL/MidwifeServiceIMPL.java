@@ -85,7 +85,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
         int nextChildNumber = childCount + 1;
 
         // Combine the motherId with the nextChildNumber to form the childId
-        return motherId + "/" + nextChildNumber;
+        return motherId + "-" + nextChildNumber;
     }
 
 
@@ -158,6 +158,8 @@ public class MidwifeServiceIMPL implements MidwifeService {
         newUser.setDob(ourUsersDTO.getDob());
         newUser.setAge(ourUsersDTO.getAge());
         newUser.setChildId(childID); // Assign childId
+        newUser.setClinicName(ourUsersDTO.getClinicName());
+
 
         OurUsers savedChild = ourUsersRepo.save(newUser);
 
