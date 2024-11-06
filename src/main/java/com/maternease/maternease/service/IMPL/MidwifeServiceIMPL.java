@@ -85,7 +85,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
         int nextChildNumber = childCount + 1;
 
         // Combine the motherId with the nextChildNumber to form the childId
-        return motherId + "/" + nextChildNumber;
+        return motherId + "-" + nextChildNumber;
     }
 
 
@@ -94,8 +94,16 @@ public class MidwifeServiceIMPL implements MidwifeService {
     @Override
     public ResponseDTO registerMother(OurUsersDTO ourUsersDTO) {
 
+        modelMapper.typeMap(OurUsersDTO.class, OurUsers.class).addMappings(mapper -> {
+            mapper.skip(OurUsers::setId);  // Skip mapping for the ID field
+
+        });
+
         // Map OurUsersDTO to OurUsers entity
         OurUsers newUser = modelMapper.map(ourUsersDTO,OurUsers.class);
+
+
+
         newUser.setRole("MOTHER");
         newUser.setPassword(passwordEncoder.encode(ourUsersDTO.getNic()));  // Set initial password to NIC
 
@@ -126,6 +134,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
         //Prepare and return response
         ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("200");
         response.setResponseMzg("Mother registered successfully.");
         return response;
     }
@@ -158,6 +167,8 @@ public class MidwifeServiceIMPL implements MidwifeService {
         newUser.setDob(ourUsersDTO.getDob());
         newUser.setAge(ourUsersDTO.getAge());
         newUser.setChildId(childID); // Assign childId
+        newUser.setClinicName(ourUsersDTO.getClinicName());
+
 
         OurUsers savedChild = ourUsersRepo.save(newUser);
 

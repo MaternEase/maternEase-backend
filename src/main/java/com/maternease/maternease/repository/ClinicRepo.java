@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClinicRepo extends JpaRepository<Clinic,Integer> {
+
+    Clinic findByClinicName(String clinicName);
 }
