@@ -26,22 +26,22 @@ public class UserManagementController {
         return ResponseEntity.ok(usersManagementService.doctorRegister(req));
     }
 
-//    @PostMapping("/auth/login")
-//    public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
-//        return ResponseEntity.ok(usersManagementService.login(req));
-//    }
-
     @PostMapping("/auth/login")
     public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
-        // Check if the email belongs to the admin
-        if ("admin@gmail.com".equals(req.getEmail())) {
-            // Call the admin-specific login logic
-            return ResponseEntity.ok(usersManagementService.adminLogin(req));
-        } else {
-            // Call the user-specific login logic
-            return ResponseEntity.ok(usersManagementService.login(req));
-        }
+        return ResponseEntity.ok(usersManagementService.login(req));
     }
+
+//    @PostMapping("/auth/login")
+//    public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
+//        // Check if the email belongs to the admin
+//        if ("admin@gmail.com".equals(req.getEmail())) {
+//            // Call the admin-specific login logic
+//            return ResponseEntity.ok(usersManagementService.adminLogin(req));
+//        } else {
+//            // Call the user-specific login logic
+//            return ResponseEntity.ok(usersManagementService.login(req));
+//        }
+//    }
 
 
     @PostMapping("/auth/refresh")
