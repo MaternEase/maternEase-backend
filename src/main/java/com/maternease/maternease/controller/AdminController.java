@@ -1,6 +1,6 @@
 package com.maternease.maternease.controller;
 
-import com.maternease.maternease.dto.OurUsersDTO;
+import com.maternease.maternease.dto.ClinicDTO;
 import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.service.AdminService;
@@ -25,5 +25,11 @@ public class AdminController {
     @PostMapping(path = "/doctor-register")
     public ResponseEntity<ReqRes> registerDoctor(@RequestBody ReqRes req){
         return ResponseEntity.ok(adminService.registerDoctor(req));
+    }
+
+    @PostMapping(path = "/clinic-register")
+    public ResponseEntity<ResponseDTO> registerClinic(@RequestBody ClinicDTO clinicDTO ){
+        ResponseDTO response = adminService.registerClinic(clinicDTO);
+        return ResponseEntity.ok(response);
     }
 }

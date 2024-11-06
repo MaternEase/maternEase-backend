@@ -1,9 +1,16 @@
 package com.maternease.maternease.service.IMPL;
 
+import com.maternease.maternease.dto.ClinicDTO;
+import com.maternease.maternease.dto.HealthChartDTO;
 import com.maternease.maternease.dto.ReqRes;
+import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.entity.Clinic;
+import com.maternease.maternease.entity.HealthChart;
 import com.maternease.maternease.entity.OurUsers;
+import com.maternease.maternease.repository.ClinicRepo;
 import com.maternease.maternease.repository.OurUsersRepo;
 import com.maternease.maternease.service.AdminService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +26,12 @@ public class AdminServiceIMPL implements AdminService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ClinicRepo clinicRepo;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
 
     @Override
@@ -101,5 +114,32 @@ public class AdminServiceIMPL implements AdminService {
         }
         return resp;
     }
+
+    @Override
+    public ResponseDTO registerClinic(ClinicDTO clinicDTO) {
+        ResponseDTO response = new ResponseDTO();
+        // Check if clinicName is already registered
+        Optional<Clinic> existingClinic = Optional.ofNullable(clinicRepo.findByClinicName(clinicDTO.getClinicName()));
+        if (existingClinic.isPresent()) {
+            response.setResponseCode("400");
+            response.setResponseMzg("Clinic with the name '" + clinicDTO.getClinicName() + "' is already registered.");
+            return response;
+        }
+
+        modelMapper.typeMap(ClinicDTO.class, Clinic.class)
+                .addMappings(mapper -> mapper.skip(Clinic::setClinicId));
+
+        // Map ClinicDTO to Clinic entity
+        Clinic clinic = modelMapper.map(clinicDTO, Clinic.class);
+
+        // Save the new Clinic
+        clinicRepo.save(clinic);
+
+        // Set successful response
+        response.setResponseCode("200");
+        response.setResponseMzg("Clinic registered successfully.");
+        return response;
+    }
+    
 
 }
