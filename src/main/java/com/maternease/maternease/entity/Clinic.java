@@ -11,7 +11,9 @@ import java.util.List;
 public class Clinic {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int clinicId;
+
     private String clinicNo;
     private String gramaniDivison;
     private String MOHArea;
