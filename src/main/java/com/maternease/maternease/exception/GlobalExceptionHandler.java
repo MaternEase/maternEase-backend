@@ -17,6 +17,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ChildNotFoundException.class)
+    public ResponseEntity<ResponseDTO> handleChildNotFound(ChildNotFoundException ex) {
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("404");
+        response.setResponseMzg(ex.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(InvalidDataException.class)
     public ResponseEntity<ResponseDTO> handleInvalidData(InvalidDataException ex) {
         ResponseDTO response = new ResponseDTO();
