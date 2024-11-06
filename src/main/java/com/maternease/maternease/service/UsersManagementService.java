@@ -11,6 +11,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import java.util.Collections;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +32,15 @@ public class UsersManagementService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    // Inject admin credentials from application.properties
+    @Value("${admin.email}")
+    private String adminEmail;
+
+    @Value("${admin.password}")
+    private String adminPassword;
+
+    private static final String ADMIN_ROLE = "ROLE_ADMIN";
 
 
 //    public ReqRes login(ReqRes loginRequest) {
@@ -123,6 +137,30 @@ public class UsersManagementService {
         return response;
     }
 
+    //admin
+    public ReqRes adminLogin(ReqRes req) {
+        ReqRes response = new ReqRes();
+
+        // Check admin credentials
+        if (adminEmail.equals(req.getEmail()) && adminPassword.equals(req.getPassword())) {
+            // Create UserDetails object for JWT generation
+            UserDetails adminUser = User.withUsername(adminEmail)
+                    .password(adminPassword)
+                    .authorities(ADMIN_ROLE)
+                    .build();
+
+            // Generate JWT for admin
+            String token = jwtUtils.generateToken(adminUser);
+            response.setStatusCode(200);
+            response.setMassage("Admin login successful");
+            response.setToken(token);
+        } else {
+            response.setStatusCode(401);
+            response.setMassage("Invalid admin credentials");
+        }
+
+        return response;
+    }
 
 
     public ReqRes refreshToken(ReqRes refreshTokenReqiest) {
