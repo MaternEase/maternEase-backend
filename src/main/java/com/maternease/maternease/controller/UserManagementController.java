@@ -16,15 +16,15 @@ public class UserManagementController {
     @Autowired
     private UsersManagementService usersManagementService;
 
-    @PostMapping("/auth/midwife-register")
-    public ResponseEntity<ReqRes> midwifeRegister(@RequestBody ReqRes req) {
-        return ResponseEntity.ok(usersManagementService.midwifeRegister(req));
-    }
+//    @PostMapping("/auth/midwife-register")
+//    public ResponseEntity<ReqRes> midwifeRegister(@RequestBody ReqRes req) {
+//        return ResponseEntity.ok(usersManagementService.midwifeRegister(req));
+//    }
 
-    @PostMapping("/auth/doctor-register")
-    public ResponseEntity<ReqRes> doctorRegister(@RequestBody ReqRes req) {
-        return ResponseEntity.ok(usersManagementService.doctorRegister(req));
-    }
+//    @PostMapping("/auth/doctor-register")
+//    public ResponseEntity<ReqRes> doctorRegister(@RequestBody ReqRes req) {
+//        return ResponseEntity.ok(usersManagementService.doctorRegister(req));
+//    }
 
     @PostMapping("/auth/login")
     public ResponseEntity<ReqRes> login(@RequestBody ReqRes req) {
