@@ -3,10 +3,12 @@ package com.maternease.maternease.controller;
 import com.maternease.maternease.dto.ClinicDTO;
 import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
 import com.maternease.maternease.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin")
@@ -32,4 +34,32 @@ public class AdminController {
         ResponseDTO response = adminService.registerClinic(clinicDTO);
         return ResponseEntity.ok(response);
     }
+
+
+    @GetMapping("/clinics")
+    public ResponseEntity<List<ClinicDTO>> getAllClinics() {
+        return ResponseEntity.ok(adminService.getAllClinics());
+    }
+
+    @GetMapping("/midwives")
+    public ResponseEntity<List<ReqRes>> getAllMidwives() {
+        return ResponseEntity.ok(adminService.getAllMidwives());
+    }
+
+    @GetMapping("/assignable-midwives")
+    public ResponseEntity<List<ReqRes>> getAssignableMidwives() {
+        return ResponseEntity.ok(adminService.getAssignableMidwives());
+    }
+
+    @GetMapping("/clinics-needing-midwives")
+    public ResponseEntity<List<ClinicDTO>> getClinicsNeedingMidwives() {
+        return ResponseEntity.ok(adminService.getClinicsNeedingMidwives());
+    }
+
+    @PutMapping("/assign-midwife")
+    public ResponseEntity<ResponseDTO> assignMidwifeToClinic(@RequestBody MidwifeClinicAssignmentDTO assignment) {
+        ResponseDTO response = adminService.assignMidwifeToClinic(assignment);
+        return ResponseEntity.ok(response);
+    }
+
 }
