@@ -140,6 +140,4 @@ public class AdminServiceIMPL implements AdminService {
         response.setResponseMzg("Clinic registered successfully.");
         return response;
     }
-    
-
 }

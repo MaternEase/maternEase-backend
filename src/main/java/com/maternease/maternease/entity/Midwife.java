@@ -9,7 +9,7 @@ import lombok.Data;
 public class Midwife {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
 //    @OneToMany(mappedBy = "midwife")
 //    private List<ClinicCalender> clinicCalenders;
@@ -17,7 +17,6 @@ public class Midwife {
     @ManyToOne
     @JoinColumn(name = "clinic_id")
     private Clinic clinic;
-
     @OneToOne
     @JoinColumns({
             @JoinColumn(name = "user_role", referencedColumnName = "role"),
