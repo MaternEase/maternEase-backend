@@ -29,4 +29,8 @@ public class Clinic {
 //
 //    @OneToMany(mappedBy = "clinic")
 //    private List<ClinicAttendee> attendees;
+
+    // Many-to-many relationship with Midwife
+    @ManyToMany(mappedBy = "assignedClinics")
+    private List<Midwife> assignedMidwives;
 }
