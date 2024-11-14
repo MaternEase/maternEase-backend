@@ -16,8 +16,4 @@ public class ClinicCalender {
 
     private Date appointmentDate;
     private Time time;
-
-    @ManyToOne
-    @JoinColumn(name = "midwife_id")
-    private Midwife midwife;
 }

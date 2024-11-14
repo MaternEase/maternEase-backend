@@ -16,12 +16,4 @@ public class Appointment {
     private Date appointmentDate;
     private Time time;
     private String NICofRegistrant;
-
-    @ManyToOne
-    @JoinColumn(name = "clinic_attendee_id")
-    private ClinicAttendee clinicAttendee;
-
-    @ManyToOne
-    @JoinColumn(name = "midwife_id")
-    private Midwife midwife;
 }
