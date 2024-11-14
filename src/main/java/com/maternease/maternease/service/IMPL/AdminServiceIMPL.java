@@ -1,12 +1,10 @@
 package com.maternease.maternease.service.IMPL;
 
 import com.maternease.maternease.dto.ClinicDTO;
-import com.maternease.maternease.dto.HealthChartDTO;
 import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
 import com.maternease.maternease.entity.Clinic;
-import com.maternease.maternease.entity.HealthChart;
 import com.maternease.maternease.entity.Midwife;
 import com.maternease.maternease.entity.OurUsers;
 import com.maternease.maternease.repository.ClinicRepo;

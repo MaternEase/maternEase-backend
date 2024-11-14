@@ -16,18 +16,4 @@ public class ClinicAttendee {
 
     private Date regDate;
     private String currentClinicId;
-
-//    @ManyToOne
-//    @JoinColumn(name = "clinic_id")
-//    private Clinic clinic; // Add this field to link back to the Clinic entity
-
-    @OneToOne
-    @JoinColumns({
-            @JoinColumn(name = "user_role", referencedColumnName = "role"),
-            @JoinColumn(name = "user_id", referencedColumnName = "id")
-    })
-    private OurUsers ourUsers;
-
-    @OneToMany(mappedBy = "clinicAttendee")
-    private List<Appointment> appointments;
 }

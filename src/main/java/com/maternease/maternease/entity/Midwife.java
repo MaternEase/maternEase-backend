@@ -13,19 +13,6 @@ public class Midwife {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-//    @OneToMany(mappedBy = "midwife")
-//    private List<ClinicCalender> clinicCalenders;
-
-//    @ManyToOne
-//    @JoinColumn(name = "clinic_id")
-//    private Clinic clinic;
-
-//    @OneToOne
-//    @JoinColumns({
-//            @JoinColumn(name = "user_role", referencedColumnName = "role"),
-//            @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    })
-
     // Define many-to-many relationship with Clinic
     @ManyToMany
     @JoinTable(
@@ -34,7 +21,7 @@ public class Midwife {
             inverseJoinColumns = @JoinColumn(name = "clinic_id")
     )
     @JsonIgnore  // To prevent infinite recursion during JSON serialization
-    private List<com.maternease.maternease.entity.Clinic> assignedClinics;
+    private List<Clinic> assignedClinics;
 
     // Link with OurUsers to inherit user details
     // One-to-one relationship with OurUsers for user details
