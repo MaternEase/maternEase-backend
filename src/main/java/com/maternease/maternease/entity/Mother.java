@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="mother")
@@ -33,6 +34,8 @@ public class Mother {
 @OneToOne
 @JoinColumn(name = "ar_condition_id", referencedColumnName = "id")
 private AntenatalRiskCondition antenatalRiskCondition;
+
+
 
 
 
