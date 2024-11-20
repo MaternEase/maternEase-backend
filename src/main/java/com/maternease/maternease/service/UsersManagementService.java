@@ -33,16 +33,6 @@ public class UsersManagementService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Inject admin credentials from application.properties
-//    @Value("${admin.email}")
-//    private String adminEmail;
-//
-//    @Value("${admin.password}")
-//    private String adminPassword;
-//
-//    private static final String ADMIN_ROLE = "ROLE_ADMIN";
-
-
 //    public ReqRes login(ReqRes loginRequest) {
 //        ReqRes response = new ReqRes();
 //        try {
