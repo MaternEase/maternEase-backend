@@ -3,13 +3,18 @@ package com.maternease.maternease.controller;
 import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.request.ClinicRecordUpdateDTO;
+import com.maternease.maternease.dto.request.MotherRegistrationDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
+import com.maternease.maternease.dto.response.ResClinicRecordDTO;
+import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
 import com.maternease.maternease.service.MidwifeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -26,8 +31,8 @@ public class MidwifeController {
     }
 
     @PostMapping(path = "/mother-register")
-    public ResponseEntity<ResponseDTO> registerMother(@RequestBody OurUsersDTO ourUsersDTO){
-        ResponseDTO response = midwifeService.registerMother(ourUsersDTO);
+    public ResponseEntity<ResponseDTO> registerMother(@RequestBody MotherRegistrationDTO motherRegistrationDTO){
+        ResponseDTO response = midwifeService.registerMother(motherRegistrationDTO);
         return ResponseEntity.ok(response);
     }
 
@@ -49,10 +54,17 @@ public class MidwifeController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping(path ="/get-antenatal-risk-assessment-details/{motherId}")
-    public ResponseEntity<AntenatalRiskConditionDTO> getAntenatalRiskAssessmentDetails(@PathVariable String motherId) {
-        AntenatalRiskConditionDTO assessmentDetails = midwifeService.getAntenatalRiskAssessmentDetails(motherId);
-        return ResponseEntity.ok(assessmentDetails);
+//    @GetMapping(path ="/get-antenatal-risk-assessment-details/{motherId}")
+//    public ResponseEntity<AntenatalRiskConditionDTO> getAntenatalRiskAssessmentDetails(@PathVariable String motherId) {
+//        AntenatalRiskConditionDTO assessmentDetails = midwifeService.getAntenatalRiskAssessmentDetails(motherId);
+//        return ResponseEntity.ok(assessmentDetails);
+//    }
+
+
+    @GetMapping(path = "/get-basic-details/{motherId}")
+    public ResponseEntity<ResMBasicDetailsDTO> getBasicDetails(@PathVariable String motherId){
+        ResMBasicDetailsDTO basicDetails = midwifeService.getBasicDetails(motherId);
+        return ResponseEntity.ok(basicDetails);
     }
 
 //    others data can be get use this /get-antenatal-risk-assessment-details/{motherId} like wise
@@ -65,6 +77,18 @@ public class MidwifeController {
             @RequestBody AntenatalRiskConditionDTO antenatalRiskConditionDTO) {
         ResponseDTO updatedDetails = midwifeService.updateAntenatalRiskAssessmentDetails(motherId, antenatalRiskConditionDTO);
         return ResponseEntity.ok(updatedDetails);
+    }
+
+    @PostMapping(path = "/clinic-record")
+    public ResponseEntity<ResponseDTO> addClinicRecord(@RequestBody ClinicRecordUpdateDTO clinicRecordUpdateDTO){
+        ResponseDTO response = midwifeService.addClinicRecord(clinicRecordUpdateDTO);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping(path = "/clinic-record/{motherId}")
+    public ResponseEntity<List<ResClinicRecordDTO>> getClinicRecord(@PathVariable String motherId){
+        List<ResClinicRecordDTO> recordDetails =(midwifeService.getClinicRecord(motherId));
+        return ResponseEntity.ok(recordDetails);
     }
 
 }
