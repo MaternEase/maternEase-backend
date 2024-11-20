@@ -3,6 +3,7 @@ package com.maternease.maternease.dto.response;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 public class ResChildProfileDTO {
@@ -12,7 +13,8 @@ public class ResChildProfileDTO {
     private String mohArea;
     private String phmArea;
     private String fieldClinicName;
-    private String gramaNiladhariDivision;
+//    private String gramaNiladhariDivision;
+    private List<String> gramaNiladhariDivision;
     private String familyRegistrationNo;
     private String motherRegistrationNo;
     private Date motherRegitrationDate;

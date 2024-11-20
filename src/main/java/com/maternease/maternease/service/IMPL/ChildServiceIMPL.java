@@ -86,7 +86,7 @@ public class ChildServiceIMPL implements ChildService {
         if (clinic != null) {
             resChildProfileDTO.setMohArea(clinic.getMOHArea());
             resChildProfileDTO.setPhmArea(clinic.getPHMArea());
-            resChildProfileDTO.setGramaNiladhariDivision(clinic.getGramaniDivison());
+            resChildProfileDTO.setGramaNiladhariDivision(clinic.getGramaniDivisions());
         }
 
         return resChildProfileDTO;
