@@ -240,47 +240,47 @@ public class UsersManagementService {
 //        }
 //    }
 
-//    public ReqRes midwifeRegister(ReqRes req) {
-//        ReqRes resp = new ReqRes();
-//
-//        try {
-//            if (req.getPassword() == null || req.getPassword().isEmpty()) {
-//                resp.setStatusCode(400);
-//                resp.setMassage("Password cannot be null or empty");
-//                return resp;
-//            }
-//
-//            Optional<OurUsers> existingUserByEmail = ourUsersRepo.findByEmail(req.getEmail());
-//            if (existingUserByEmail.isPresent()) {
-//                resp.setStatusCode(400);
-//                resp.setMassage("Email is already registered!");
-//                return resp;
-//            }
-//
-//            OurUsers ourUser = new OurUsers();
-//            ourUser.setEmail(req.getEmail());
-//            ourUser.setFullName(req.getFullName());
-//            ourUser.setNic(req.getNic());
-//            ourUser.setCreatedAt(new Date());  // Automatically set to the current timestamp
-//            ourUser.setPassword(passwordEncoder.encode(req.getPassword()));
-//            ourUser.setContactNo(req.getContactNo());
-//            ourUser.setDob(req.getDob());
-//            ourUser.setGender(req.getGender());
-//            ourUser.setRole(req.getRole());
-//
-//            OurUsers ourUsersResult = ourUsersRepo.save(ourUser);
-//            if (ourUsersResult.getId() > 0) {
-//                resp.setOurUsers((ourUsersResult));
-//                resp.setMassage("User registered successfully");
-//                resp.setStatusCode(200);
-//            }
-//
-//        } catch (Exception e) {
-//            resp.setStatusCode(500);
-//            resp.setError(e.getMessage());
-//        }
-//        return resp;
-//    }
+    public ReqRes midwifeRegister(ReqRes req) {
+        ReqRes resp = new ReqRes();
+
+        try {
+            if (req.getPassword() == null || req.getPassword().isEmpty()) {
+                resp.setStatusCode(400);
+                resp.setMassage("Password cannot be null or empty");
+                return resp;
+            }
+
+            Optional<OurUsers> existingUserByEmail = ourUsersRepo.findByEmail(req.getEmail());
+            if (existingUserByEmail.isPresent()) {
+                resp.setStatusCode(400);
+                resp.setMassage("Email is already registered!");
+                return resp;
+            }
+
+            OurUsers ourUser = new OurUsers();
+            ourUser.setEmail(req.getEmail());
+            ourUser.setFullName(req.getFullName());
+            ourUser.setNic(req.getNic());
+            ourUser.setCreatedAt(new Date());  // Automatically set to the current timestamp
+            ourUser.setPassword(passwordEncoder.encode(req.getPassword()));
+            ourUser.setContactNo(req.getContactNo());
+            ourUser.setDob(req.getDob());
+            ourUser.setGender(req.getGender());
+            ourUser.setRole(req.getRole());
+
+            OurUsers ourUsersResult = ourUsersRepo.save(ourUser);
+            if (ourUsersResult.getId() > 0) {
+                resp.setOurUsers((ourUsersResult));
+                resp.setMassage("User registered successfully");
+                resp.setStatusCode(200);
+            }
+
+        } catch (Exception e) {
+            resp.setStatusCode(500);
+            resp.setError(e.getMessage());
+        }
+        return resp;
+    }
 
 //    public ReqRes doctorRegister(ReqRes req) {
 //        ReqRes resp = new ReqRes();
