@@ -20,9 +20,9 @@ import java.util.List;
 @Service
 public class BookingServiceIMPL implements BookingService {
 
-    private final BookingRepo bookingRepo;
-    private final MotherRepo motherRepo;
-    private final TimeslotRepo timeslotRepo;
+    private BookingRepo bookingRepo;
+    private MotherRepo motherRepo;
+    private TimeslotRepo timeslotRepo;
 
     @Autowired
     public BookingServiceIMPL(BookingRepo bookingRepo, MotherRepo motherRepo, TimeslotRepo timeslotRepo) {
@@ -47,13 +47,20 @@ public class BookingServiceIMPL implements BookingService {
         timeslot2.setTime("11:00 AM - 12:00 PM");
         timeslot2.setClinicSch(clinicSch);
 
+        Timeslot timeslot3 = new Timeslot();
+        timeslot2.setTimeslotId(3L);
+        timeslot2.setTime("12:00 AM - 13:00 PM");
+        timeslot2.setClinicSch(clinicSch);
+
         List<Timeslot> timeslots = new ArrayList<>();
         timeslots.add(timeslot1);
         timeslots.add(timeslot2);
+        timeslots.add(timeslot3);
         clinicSch.setTimeslots(timeslots);
 
         timeslotRepo.save(timeslot1);
         timeslotRepo.save(timeslot2);
+        timeslotRepo.save(timeslot3);
     }
 
     @Override
@@ -76,6 +83,16 @@ public class BookingServiceIMPL implements BookingService {
         bookingRepo.save(booking);
 
         return mapToResponseDTO(booking, timeslot);
+    }
+
+    public String getBookingStatusForTimeslot(Long timeslotId) {
+        Timeslot timeslot = timeslotRepo.findById(timeslotId)
+                .orElseThrow(() -> new RuntimeException("Timeslot not found"));
+
+        long bookingCount = bookingRepo.countByTimeslot_TimeslotId(timeslot.getTimeslotId());
+        long maxBookings = 5; // Maximum number of bookings allowed
+
+        return bookingCount + "/" + maxBookings;
     }
 
     private BookingResponseDTO mapToResponseDTO(Booking booking, Timeslot timeslot) {
