@@ -10,6 +10,8 @@ public class MidwifeBookingDetailsDTO {
     private String timeslotTime;
     private int bookingCount;
     private List<BookingResponseDTO> mothers; // Reuse the existing DTO
+    private String clinicType; // New field for clinic type
+
 
 
     // Getters and setters

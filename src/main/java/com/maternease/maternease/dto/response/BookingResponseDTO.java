@@ -8,6 +8,7 @@ public class BookingResponseDTO {
     private Long timeslotId;
     private String timeslotTime;
     private String motherId;
+    private String clinicType;
 //    private String userName;
 
     // Getters and Setters

@@ -80,6 +80,7 @@ public class BookingServiceIMPL implements BookingService {
         Booking booking = new Booking();
         booking.setMother(mother);
         booking.setTimeslot(timeslot);
+        booking.setClinicType(bookingRequest.getClinicType()); // Set clinic type
 
         bookingRepo.save(booking);
 
@@ -116,6 +117,8 @@ public class BookingServiceIMPL implements BookingService {
                 bookingResponseDTO.setTimeslotId(timeslot.getTimeslotId());
                 bookingResponseDTO.setTimeslotTime(timeslot.getTime());
                 bookingResponseDTO.setMotherId(booking.getMother().getMotherId());
+                bookingResponseDTO.setClinicType(booking.getClinicType()); // Include clinic type
+
                 // Add other required details from Booking entity
                 motherDetails.add(bookingResponseDTO);
             }
@@ -134,6 +137,8 @@ public class BookingServiceIMPL implements BookingService {
         responseDto.setTimeslotId(timeslot.getTimeslotId());
         responseDto.setTimeslotTime(timeslot.getTime());
         responseDto.setMotherId(booking.getMother().getMotherId());
+        responseDto.setClinicType(booking.getClinicType()); // Include clinic type
+
         return responseDto;
     }
 }

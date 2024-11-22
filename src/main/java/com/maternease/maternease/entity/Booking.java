@@ -19,6 +19,9 @@ public class Booking {
     @JoinColumn(name = "timeslot_id")
     private Timeslot timeslot;
 
+    @Column(name = "clinic_type")
+    private String clinicType;
+
     // Getters and Setters
 }
 
