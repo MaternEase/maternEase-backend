@@ -5,6 +5,8 @@ import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
+import com.maternease.maternease.dto.response.MidwifeBookingDetailsDTO;
+import com.maternease.maternease.service.BookingService;
 import com.maternease.maternease.service.MidwifeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,8 @@ public class MidwifeController {
 
     @Autowired
     private MidwifeService midwifeService;
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping(path = "/sss")
     public String sadee(){
@@ -65,6 +69,12 @@ public class MidwifeController {
             @RequestBody AntenatalRiskConditionDTO antenatalRiskConditionDTO) {
         ResponseDTO updatedDetails = midwifeService.updateAntenatalRiskAssessmentDetails(motherId, antenatalRiskConditionDTO);
         return ResponseEntity.ok(updatedDetails);
+    }
+
+    @GetMapping("/bookings")
+    public ResponseEntity<List<MidwifeBookingDetailsDTO>> getAllBookingDetails() {
+        List<MidwifeBookingDetailsDTO> bookingDetails = bookingService.getAllBookingDetails();
+        return ResponseEntity.ok(bookingDetails);
     }
 
 }
