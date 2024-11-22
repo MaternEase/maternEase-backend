@@ -7,7 +7,7 @@ public interface BookingService {
 
 
     BookingResponseDTO bookTimeslot(BookingRequestDTO bookingRequest);
-    public String getBookingStatusForTimeslot(Long timeslotId);
+    String getBookingStatusForTimeslot(Long timeslotId);
 
     // Additional methods can be declared as needed
 }

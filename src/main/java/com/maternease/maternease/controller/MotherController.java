@@ -32,6 +32,10 @@ public class MotherController {
         return ResponseEntity.ok(response);
     }
 
-
+    @GetMapping("/timeslots/{id}/status")
+    public ResponseEntity<String> getTimeslotBookingStatus(@PathVariable Long id) {
+        String status = bookingService.getBookingStatusForTimeslot(id);
+        return ResponseEntity.ok(status);
+    }
 
 }
