@@ -3,8 +3,12 @@ package com.maternease.maternease.service.IMPL;
 import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.request.ClinicRecordUpdateDTO;
+import com.maternease.maternease.dto.request.MotherRegistrationDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
+import com.maternease.maternease.dto.response.ResClinicRecordDTO;
+import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
 import com.maternease.maternease.entity.*;
 import com.maternease.maternease.exception.MotherNotFoundException;
 import com.maternease.maternease.repository.*;
@@ -15,8 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,6 +46,9 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
     @Autowired
     private ChildRepo childRepo;
+
+    @Autowired
+    private ClinicRecordRepo clinicRecordRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -92,42 +99,34 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
 
     @Override
-    public ResponseDTO registerMother(OurUsersDTO ourUsersDTO) {
+    public ResponseDTO registerMother(MotherRegistrationDTO motherRegistrationDTO) {
 
         modelMapper.typeMap(OurUsersDTO.class, OurUsers.class).addMappings(mapper -> {
             mapper.skip(OurUsers::setId);  // Skip mapping for the ID field
 
         });
 
-        // Map OurUsersDTO to OurUsers entity
-        OurUsers newUser = modelMapper.map(ourUsersDTO,OurUsers.class);
-
-
-
+        OurUsers newUser = modelMapper.map(motherRegistrationDTO, OurUsers.class);
         newUser.setRole("MOTHER");
-        newUser.setPassword(passwordEncoder.encode(ourUsersDTO.getNic()));  // Set initial password to NIC
+        newUser.setPassword(passwordEncoder.encode(motherRegistrationDTO.getNic()));  // Encode NIC as password
 
         // Save the new user entity in OurUsers
         OurUsers savedUser = ourUsersRepo.save(newUser);
 
-        //Create AntenatalRiskCondition
-        AntenatalRiskCondition antenatalRiskCondition = new AntenatalRiskCondition();
-        antenatalRiskCondition.setFullName(savedUser.getFullName());
-        antenatalRiskCondition.setAge(savedUser.getAge());
-        antenatalRiskCondition.setContactNo(savedUser.getContactNo());
-        antenatalRiskCondition.setAddress(savedUser.getAddress());
+        // Map DTO to AntenatalRiskCondition entity
+        AntenatalRiskCondition antenatalRiskCondition = modelMapper.map(motherRegistrationDTO, AntenatalRiskCondition.class);
 
-        // Save the AntenatalRiskCondition entry
-        AntenatalRiskCondition savedRiskConditions = antenatalRiskConditionRepo.save(antenatalRiskCondition);
+        // Save AntenatalRiskCondition
+        AntenatalRiskCondition savedRiskCondition = antenatalRiskConditionRepo.save(antenatalRiskCondition);
 
-        //Create and link Mother entity to OurUsers and AntenatalRiskCondition
+        // Create and link Mother entity
         Mother mother = new Mother();
         mother.setMotherId(generateMotherId()); // Generate custom motherId
         mother.setNic(savedUser.getNic());
         mother.setContactNo(savedUser.getContactNo());
         mother.setStatus(0); // Expected Mother
         mother.setOurUsers(savedUser);
-        mother.setAntenatalRiskCondition(savedRiskConditions);
+        mother.setAntenatalRiskCondition(savedRiskCondition);
 
         //Save the Mother entity
         Mother savedMother = motherRepo.save(mother);
@@ -215,21 +214,43 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
 
 
+//    @Override
+//    public AntenatalRiskConditionDTO getAntenatalRiskAssessmentDetails(String motherId) {
+//
+//        Mother mother = motherRepo.findById(motherId)
+//                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+//
+//        Integer arConditionId = mother.getAntenatalRiskCondition().getId();
+//
+//        Optional<AntenatalRiskCondition> antenatalRiskCondition = antenatalRiskConditionRepo.findById(arConditionId);
+//
+//        return modelMapper.map(antenatalRiskCondition, AntenatalRiskConditionDTO.class);
+//
+//
+//
+//    }
+
+
     @Override
-    public AntenatalRiskConditionDTO getAntenatalRiskAssessmentDetails(String motherId) {
+    public ResMBasicDetailsDTO getBasicDetails(String motherId) {
+
 
         Mother mother = motherRepo.findById(motherId)
                 .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
 
-        Integer arConditionId = mother.getAntenatalRiskCondition().getId();
+        ResMBasicDetailsDTO resMBasicDetailsDTO = modelMapper.map(mother.getOurUsers(),ResMBasicDetailsDTO.class);
+        if(mother.getAntenatalRiskCondition() != null){
+            modelMapper.map(mother.getAntenatalRiskCondition(),resMBasicDetailsDTO);
+        }
 
-        Optional<AntenatalRiskCondition> antenatalRiskCondition = antenatalRiskConditionRepo.findById(arConditionId);
-
-        return modelMapper.map(antenatalRiskCondition, AntenatalRiskConditionDTO.class);
-
+        resMBasicDetailsDTO.setMotherId(mother.getMotherId());
+        
 
 
+        return resMBasicDetailsDTO;
     }
+
+
 
     @Override
     public ResponseDTO updateAntenatalRiskAssessmentDetails(String motherId, AntenatalRiskConditionDTO antenatalRiskConditionDTO) {
@@ -254,6 +275,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
         response.setResponseMzg("Update data  successfully.");
         return response;
     }
+
 
 
     private String findMotherName(String motherId) {
@@ -300,6 +322,47 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
             return dMotherTableDTO;
         }).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public ResponseDTO addClinicRecord(ClinicRecordUpdateDTO clinicRecordUpdateDTO) {
+
+        // Configure ModelMapper locally to skip 'id' field
+        modelMapper.typeMap(ClinicRecordUpdateDTO.class, ClinicRecord.class)
+                .addMappings(mapper -> mapper.skip(ClinicRecord::setId));
+
+
+        String motherId =clinicRecordUpdateDTO.getMotherId();
+
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+
+
+        ClinicRecord clinicRecord=modelMapper.map(clinicRecordUpdateDTO, ClinicRecord.class);
+
+        clinicRecord.setCreatedAt(LocalDateTime.now());
+        ClinicRecord savedRecord = clinicRecordRepo.save(clinicRecord);
+
+       // Prepare and return success response
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("200");
+        response.setResponseMzg("Clinic Record data  add successfully.");
+        return response;
+    }
+
+    @Override
+    public List<ResClinicRecordDTO> getClinicRecord(String motherId) {
+
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+
+        List<ClinicRecord> clinicRecords = clinicRecordRepo.findAllByMotherId(motherId);
+
+        // Map each ClinicRecord to ResClinicRecordDTO
+        return clinicRecords.stream()
+                .map(record -> modelMapper.map(record, ResClinicRecordDTO.class))
+                .toList();
     }
 
 

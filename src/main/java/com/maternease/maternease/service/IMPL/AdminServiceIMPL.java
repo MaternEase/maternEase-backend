@@ -40,6 +40,14 @@ public class AdminServiceIMPL implements AdminService {
     private ModelMapper modelMapper;
 
 
+    private String generateMidId() {
+        Optional<Midwife> latestMidwife = midwifeRepo.findFirstByOrderByMidIdDesc();
+        String latestId = latestMidwife.isPresent() ? latestMidwife.get().getMidId() : "MID0000";
+        int num = Integer.parseInt(latestId.substring(3)) + 1;
+        return "MID" + String.format("%04d", num);
+    }
+
+
     @Override
     public ReqRes registerMidwife(ReqRes req) {
 
@@ -70,10 +78,18 @@ public class AdminServiceIMPL implements AdminService {
             ourUser.setGender(req.getGender());
             ourUser.setRole(req.getRole());
 
-            OurUsers ourUsersResult = ourUsersRepo.save(ourUser);
-            if (ourUsersResult.getId() > 0) {
-                resp.setOurUsers((ourUsersResult));
-                resp.setMassage("User registered successfully");
+            OurUsers savedUser = ourUsersRepo.save(ourUser);
+
+            // Create and save the Midwife
+            Midwife newMidwife = new Midwife();
+            newMidwife.setOurUsers(savedUser);
+            newMidwife.setMidId(generateMidId());
+            Midwife savedMidwife = midwifeRepo.save(newMidwife);
+
+            if (savedMidwife.getId() > 0) {
+                resp.setOurUsers(savedUser);
+                resp.setMidwife(savedMidwife);
+                resp.setMassage("Midwife registered successfully");
                 resp.setStatusCode(200);
             }
 
