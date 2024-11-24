@@ -3,6 +3,7 @@ package com.maternease.maternease.controller;
 import com.maternease.maternease.dto.request.BookingRequestDTO;
 import com.maternease.maternease.dto.response.BookingResponseDTO;
 import com.maternease.maternease.dto.response.MProfileDetailsDTO;
+import com.maternease.maternease.entity.AntenatalRiskCondition;
 import com.maternease.maternease.service.BookingService;
 import com.maternease.maternease.service.MotherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,12 @@ public class MotherController {
         String status = bookingService.getBookingStatusForTimeslot(id);
         return ResponseEntity.ok(status);
     }
+
+    @GetMapping(path = "/antenatal-risk/{motherId}")
+    public ResponseEntity<AntenatalRiskCondition> getAntenatalRiskCondition(@PathVariable String motherId) {
+        AntenatalRiskCondition antenatalRiskCondition = motherService.getAntenatalRiskCondition(motherId);
+        return ResponseEntity.ok(antenatalRiskCondition);
+    }
+
 
 }

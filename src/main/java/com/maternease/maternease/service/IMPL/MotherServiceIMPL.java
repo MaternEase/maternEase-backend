@@ -1,10 +1,10 @@
 package com.maternease.maternease.service.IMPL;
 
 import com.maternease.maternease.dto.response.MProfileDetailsDTO;
+import com.maternease.maternease.entity.AntenatalRiskCondition;
 import com.maternease.maternease.entity.Clinic;
 import com.maternease.maternease.entity.Mother;
 import com.maternease.maternease.entity.OurUsers;
-import com.maternease.maternease.exception.ChildNotFoundException;
 import com.maternease.maternease.exception.MotherNotFoundException;
 import com.maternease.maternease.repository.ClinicRepo;
 import com.maternease.maternease.repository.MotherRepo;
@@ -53,4 +53,6 @@ public class MotherServiceIMPL implements MotherService {
         }
         return mProfileDetailsDTO;
     }
+
+
 }
