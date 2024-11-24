@@ -54,5 +54,15 @@ public class MotherServiceIMPL implements MotherService {
         return mProfileDetailsDTO;
     }
 
+    @Override
+    public AntenatalRiskCondition getAntenatalRiskCondition(String motherId) {
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
 
+        AntenatalRiskCondition antenatalRiskCondition = mother.getAntenatalRiskCondition();
+        if (antenatalRiskCondition == null) {
+            throw new RuntimeException("No antenatal risk conditions associated with this mother.");
+        }
+        return antenatalRiskCondition;
+    }
 }
