@@ -28,7 +28,7 @@ public interface MidwifeService {
 
     ResMBasicDetailsDTO getBasicDetails(String motherId);
 
-    ResponseDTO addClinicRecord(ClinicRecordUpdateDTO clinicRecordUpdateDTO);
+    ResponseDTO addClinicRecord(String motherId,ClinicRecordUpdateDTO clinicRecordUpdateDTO);
 
     List<ResClinicRecordDTO> getClinicRecord(String motherId);
 }

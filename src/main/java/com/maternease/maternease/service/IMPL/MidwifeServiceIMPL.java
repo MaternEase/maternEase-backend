@@ -326,22 +326,22 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
 
     @Override
-    public ResponseDTO addClinicRecord(ClinicRecordUpdateDTO clinicRecordUpdateDTO) {
+    public ResponseDTO addClinicRecord(String motherId,ClinicRecordUpdateDTO clinicRecordUpdateDTO) {
 
         // Configure ModelMapper locally to skip 'id' field
         modelMapper.typeMap(ClinicRecordUpdateDTO.class, ClinicRecord.class)
                 .addMappings(mapper -> mapper.skip(ClinicRecord::setId));
 
 
-        String motherId =clinicRecordUpdateDTO.getMotherId();
+//        String motherId =clinicRecordUpdateDTO.getMotherId();
 
         Mother mother = motherRepo.findById(motherId)
                 .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
 
-
         ClinicRecord clinicRecord=modelMapper.map(clinicRecordUpdateDTO, ClinicRecord.class);
 
         clinicRecord.setCreatedAt(LocalDateTime.now());
+        clinicRecord.setMotherId(motherId);
         ClinicRecord savedRecord = clinicRecordRepo.save(clinicRecord);
 
        // Prepare and return success response
