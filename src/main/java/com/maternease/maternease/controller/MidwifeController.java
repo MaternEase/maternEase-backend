@@ -87,15 +87,21 @@ public class MidwifeController {
     }
 
 
+
     @GetMapping("/bookings")
     public ResponseEntity<List<MidwifeBookingDetailsDTO>> getAllBookingDetails() {
         List<MidwifeBookingDetailsDTO> bookingDetails = bookingService.getAllBookingDetails();
         return ResponseEntity.ok(bookingDetails);
     }
 
-    @PostMapping(path = "/clinic-record")
-    public ResponseEntity<ResponseDTO> addClinicRecord(@RequestBody ClinicRecordUpdateDTO clinicRecordUpdateDTO){
-        ResponseDTO response = midwifeService.addClinicRecord(clinicRecordUpdateDTO);
+//     @PostMapping(path = "/clinic-record")
+//     public ResponseEntity<ResponseDTO> addClinicRecord(@RequestBody ClinicRecordUpdateDTO clinicRecordUpdateDTO){
+//         ResponseDTO response = midwifeService.addClinicRecord(clinicRecordUpdateDTO);
+
+    @PostMapping(path = "/clinic-record/{motherId}")
+    public ResponseEntity<ResponseDTO> addClinicRecord(@PathVariable String motherId, @RequestBody ClinicRecordUpdateDTO clinicRecordUpdateDTO){
+        ResponseDTO response = midwifeService.addClinicRecord(motherId ,clinicRecordUpdateDTO);
+
         return ResponseEntity.ok(response);
     }
 
