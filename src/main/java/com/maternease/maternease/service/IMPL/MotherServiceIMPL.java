@@ -1,5 +1,6 @@
 package com.maternease.maternease.service.IMPL;
 
+import com.maternease.maternease.dto.AntenatalRiskConditionSlimDTO;
 import com.maternease.maternease.dto.response.MProfileDetailsDTO;
 import com.maternease.maternease.entity.AntenatalRiskCondition;
 import com.maternease.maternease.entity.Clinic;
@@ -63,6 +64,14 @@ public class MotherServiceIMPL implements MotherService {
         if (antenatalRiskCondition == null) {
             throw new RuntimeException("No antenatal risk conditions associated with this mother.");
         }
-        return antenatalRiskCondition;
+        // Create the DTO and map only the required fields
+        AntenatalRiskConditionSlimDTO slimDTO = new AntenatalRiskConditionSlimDTO();
+        slimDTO.setConsanguinity(antenatalRiskCondition.getConsanguinity());
+        slimDTO.setRubellaImmunization(antenatalRiskCondition.getRubellaImmunization());
+        slimDTO.setPrePregnancyScreeningDone(antenatalRiskCondition.getPrePregnancyScreeningDone());
+        slimDTO.setPreconceptionalFolicAcid(antenatalRiskCondition.getPreconceptionalFolicAcid());
+        slimDTO.setHistoryOfSubFertility(antenatalRiskCondition.getHistoryOfSubFertility());
+
+        return slimDTO;
     }
 }
