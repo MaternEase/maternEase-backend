@@ -2,17 +2,18 @@ package com.maternease.maternease.service.IMPL;
 
 import com.maternease.maternease.dto.AntenatalRiskConditionSlimDTO;
 import com.maternease.maternease.dto.response.MProfileDetailsDTO;
-import com.maternease.maternease.entity.AntenatalRiskCondition;
-import com.maternease.maternease.entity.Clinic;
-import com.maternease.maternease.entity.Mother;
-import com.maternease.maternease.entity.OurUsers;
+import com.maternease.maternease.entity.*;
 import com.maternease.maternease.exception.MotherNotFoundException;
+import com.maternease.maternease.repository.ClinicRecordRepo;
 import com.maternease.maternease.repository.ClinicRepo;
 import com.maternease.maternease.repository.MotherRepo;
 import com.maternease.maternease.repository.OurUsersRepo;
 import com.maternease.maternease.service.MotherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class MotherServiceIMPL implements MotherService {
@@ -25,6 +26,9 @@ public class MotherServiceIMPL implements MotherService {
 
     @Autowired
     private OurUsersRepo ourUsersRepo;
+
+    @Autowired
+    private ClinicRecordRepo clinicRecordRepo;
 
     @Override
     public MProfileDetailsDTO getMotherProfile(String motherId) {
@@ -73,5 +77,18 @@ public class MotherServiceIMPL implements MotherService {
         slimDTO.setHistoryOfSubFertility(antenatalRiskCondition.getHistoryOfSubFertility());
 
         return slimDTO;
+    }
+
+    public List<Map<String, Object>> getFundalHeightData(String motherId) {
+        List<ClinicRecord> records = clinicRecordRepo.findAllByMotherId(motherId);
+
+        // Transform the data to a simplified format
+        return records.stream()
+                .map(record -> Map.of(
+                        "week", (Object) record.getWeeksFromPregnancy(),
+                        "fundalHeight", (Object) record.getFundalHeight()
+                ))
+                .toList();
+
     }
 }

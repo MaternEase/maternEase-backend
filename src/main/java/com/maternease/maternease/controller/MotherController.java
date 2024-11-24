@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/mother")
 @CrossOrigin
@@ -20,6 +23,7 @@ public class MotherController {
 
     @Autowired
     private BookingService bookingService;
+
 
     @GetMapping(path = "/profile/{motherId}")
     public ResponseEntity<MProfileDetailsDTO> getMotherProfile(@PathVariable String motherId) {
@@ -43,6 +47,12 @@ public class MotherController {
     public ResponseEntity<AntenatalRiskCondition> getAntenatalRiskCondition(@PathVariable String motherId) {
         AntenatalRiskCondition antenatalRiskCondition = motherService.getAntenatalRiskCondition(motherId);
         return ResponseEntity.ok(antenatalRiskCondition);
+    }
+
+    @GetMapping("/{motherId}/fundal-height")
+    public ResponseEntity<List<Map<String, Object>>> getFundalHeightData(@PathVariable String motherId) {
+        List<Map<String, Object>> data = motherService.getFundalHeightData(motherId);
+        return ResponseEntity.ok(data);
     }
 
 
