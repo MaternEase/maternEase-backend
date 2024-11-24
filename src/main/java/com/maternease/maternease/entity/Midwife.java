@@ -13,6 +13,8 @@ public class Midwife {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String midId;
+
     // Define many-to-many relationship with Clinic
     @ManyToMany
     @JoinTable(
@@ -32,17 +34,4 @@ public class Midwife {
     })
 
     private OurUsers ourUsers;
-
-    //    @OneToMany(mappedBy = "midwife")
-//    private List<ClinicCalender> clinicCalenders;
-
-//    @ManyToOne
-//    @JoinColumn(name = "clinic_id")
-//    private Clinic clinic;
-
-//    @OneToOne
-//    @JoinColumns({
-//            @JoinColumn(name = "user_role", referencedColumnName = "role"),
-//            @JoinColumn(name = "user_id", referencedColumnName = "id")
-//    })
 }
