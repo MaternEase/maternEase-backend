@@ -12,6 +12,8 @@ import com.maternease.maternease.service.MotherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,6 +81,8 @@ public class MotherServiceIMPL implements MotherService {
         return slimDTO;
     }
 
+
+
     public List<Map<String, Object>> getFundalHeightData(String motherId) {
         List<ClinicRecord> records = clinicRecordRepo.findAllByMotherId(motherId);
 
@@ -90,5 +94,18 @@ public class MotherServiceIMPL implements MotherService {
                 ))
                 .toList();
 
+    }
+
+    public List<Map<String, Object>> getWeightGainChartData(String motherId) {
+        List<Object[]> data = clinicRecordRepo.findWeightGainByMotherId(motherId);
+
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        for (Object[] record : data) {
+            Map<String, Object> point = new HashMap<>();
+            point.put("weeks", record[0]); // weeksFromPregnancy
+            point.put("weight", record[1]); // newWeight
+            chartData.add(point);
+        }
+        return chartData;
     }
 }

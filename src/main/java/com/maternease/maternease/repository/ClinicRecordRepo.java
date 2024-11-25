@@ -6,10 +6,18 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ClinicRecordRepo extends JpaRepository<ClinicRecord,Integer> {
 
     // Find all clinic records for a given motherId
     @Query("SELECT cr FROM ClinicRecord cr WHERE cr.motherId = :motherId")
     List<ClinicRecord> findAllByMotherId(@Param("motherId") String motherId);
+
+    @Query("SELECT c.weeksFromPregnancy, c.newWeight FROM ClinicRecord c WHERE c.motherId = :motherId ORDER BY c.weeksFromPregnancy ASC")
+    List<Object[]> findWeightGainByMotherId(@Param("motherId") String motherId);
+
+
+
+
 }
