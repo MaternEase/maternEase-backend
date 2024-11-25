@@ -81,21 +81,22 @@ public class MotherServiceIMPL implements MotherService {
         return slimDTO;
     }
 
-
-
+    //For fundal height chart
     public List<Map<String, Object>> getFundalHeightData(String motherId) {
-        List<ClinicRecord> records = clinicRecordRepo.findAllByMotherId(motherId);
+        // Query to fetch only the required data
+        List<Object[]> data = clinicRecordRepo.findFundalHeightByMotherId(motherId);
 
-        // Transform the data to a simplified format
-        return records.stream()
-                .map(record -> Map.of(
-                        "week", (Object) record.getWeeksFromPregnancy(),
-                        "fundalHeight", (Object) record.getFundalHeight()
-                ))
-                .toList();
-
+        List<Map<String, Object>> chartData = new ArrayList<>();
+        for (Object[] record : data) {
+            Map<String, Object> point = new HashMap<>();
+            point.put("weeks", record[0]); // weeksFromPregnancy
+            point.put("fundalHeight", record[1]); // fundalHeight
+            chartData.add(point);
+        }
+        return chartData;
     }
 
+    //For weight gain chart
     public List<Map<String, Object>> getWeightGainChartData(String motherId) {
         List<Object[]> data = clinicRecordRepo.findWeightGainByMotherId(motherId);
 
