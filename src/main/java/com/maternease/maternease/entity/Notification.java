@@ -11,13 +11,13 @@ import java.util.Date;
 public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long notificationNo;
+    private int notificationNo;
 
     private String message;
     private Date date;
     private Time time;
     private String userType; // e.g., "Admin", "Midwife", "Doctor"
-    private boolean isRead; // Mark as read/unread
+    private Boolean isRead; // Mark as read/unread
 
     @ManyToOne
     @JoinColumn(name = "user_id")
