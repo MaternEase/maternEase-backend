@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class NotificationServiceIMPL implements NotificationService {
@@ -48,5 +49,9 @@ public class NotificationServiceIMPL implements NotificationService {
         message.setSubject(subject);
         message.setText(body);
         mailSender.send(message);
+    }
+
+    public List<Notification> getUnreadNotifications(int userId) {
+        return notificationRepo.findByUserIdAndIsRead(userId, false);
     }
 }
