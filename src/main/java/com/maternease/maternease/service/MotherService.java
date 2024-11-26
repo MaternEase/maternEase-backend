@@ -13,4 +13,6 @@ public interface MotherService {
     AntenatalRiskCondition getAntenatalRiskCondition(String motherId);
 
     public List<Map<String, Object>> getFundalHeightData(String motherId);
+
+    List<Map<String, Object>> getWeightGainChartData(String motherId);
 }

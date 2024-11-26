@@ -3,6 +3,7 @@ package com.maternease.maternease.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class Mother {
     private boolean riskCondition;
     private boolean refdoc;
     private Date delivered_date;
+    private Date expected_date;
+    private LocalDate lastMenstrualDate;
+
 
     @OneToOne
     @JoinColumns({
@@ -30,10 +34,10 @@ public class Mother {
 
 
 
-// ------------Connect AntenatalRiskCondition------------------
-@OneToOne
-@JoinColumn(name = "ar_condition_id", referencedColumnName = "id")
-private AntenatalRiskCondition antenatalRiskCondition;
+    // ------------Connect AntenatalRiskCondition------------------
+    @OneToOne
+    @JoinColumn(name = "ar_condition_id", referencedColumnName = "id")
+    private AntenatalRiskCondition antenatalRiskCondition;
 
 
 

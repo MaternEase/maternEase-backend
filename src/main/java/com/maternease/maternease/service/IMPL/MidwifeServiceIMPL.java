@@ -19,7 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,6 +130,16 @@ public class MidwifeServiceIMPL implements MidwifeService {
         mother.setStatus(0); // Expected Mother
         mother.setOurUsers(savedUser);
         mother.setAntenatalRiskCondition(savedRiskCondition);
+
+        Date lastMenstrualDate = motherRegistrationDTO.getLastMenstrualDate();
+
+        if (lastMenstrualDate != null) {
+            LocalDate localLastMenstrualDate = lastMenstrualDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            LocalDate expectedDate = localLastMenstrualDate.plusDays(280);
+            mother.setExpected_date(java.sql.Date.valueOf(expectedDate)); // Convert to SQL Date
+        }
 
         //Save the Mother entity
         Mother savedMother = motherRepo.save(mother);
@@ -244,7 +257,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
         }
 
         resMBasicDetailsDTO.setMotherId(mother.getMotherId());
-        
+
 
 
         return resMBasicDetailsDTO;
@@ -344,7 +357,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
         clinicRecord.setMotherId(motherId);
         ClinicRecord savedRecord = clinicRecordRepo.save(clinicRecord);
 
-       // Prepare and return success response
+        // Prepare and return success response
         ResponseDTO response = new ResponseDTO();
         response.setResponseCode("200");
         response.setResponseMzg("Clinic Record data  add successfully.");

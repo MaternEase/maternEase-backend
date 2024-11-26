@@ -22,6 +22,7 @@ public class ResMBasicDetailsDTO {
     private Double weight;
     private Double bmi;
     private Integer poa;
+    private Date expected_date;
     private String husbandName;
     private Integer husbandAge;
     private String motherEducationLevel;

@@ -55,5 +55,11 @@ public class MotherController {
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("/weight-gain/{motherId}")
+    public ResponseEntity<List<Map<String, Object>>> getWeightGainData(@PathVariable String motherId) {
+        List<Map<String, Object>> data = motherService.getWeightGainChartData(motherId);
+        return ResponseEntity.ok(data);
+    }
+
 
 }
