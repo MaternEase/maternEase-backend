@@ -22,6 +22,9 @@ public class ClinicRecord {
     @Column(name = "fundal_height")
     private Float fundalHeight;
 
+    @Column(name = "new_weight")
+    private Float newWeight;
+
     @Column(name = "fetal_heart_rate")
     private Integer fetalHeartRate;
 

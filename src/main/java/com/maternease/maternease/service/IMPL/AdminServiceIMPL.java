@@ -201,7 +201,11 @@ public class AdminServiceIMPL implements AdminService {
     @Override
     public List<ClinicDTO> getClinicsNeedingMidwives() {
         return clinicRepo.findAll().stream()
-                .filter(clinic -> clinic.getAssignedMidwives().size() < 2)
+//                .filter(clinic -> clinic.getAssignedMidwives().size() < 2)
+                .filter(clinic -> {
+                    int assignedCount = (clinic.getMainMidwife() != null ? 1 : 0) + clinic.getReservedMidwives().size();
+                    return assignedCount < 3; // Assuming max of 3 midwives per clinic
+                })
                 .map(clinic -> modelMapper.map(clinic, ClinicDTO.class))
                 .collect(Collectors.toList());
     }
@@ -231,7 +235,8 @@ public class AdminServiceIMPL implements AdminService {
 
         // Check clinic's midwife count
         // Check if the clinic has reached the midwife assignment limit
-        if (clinic.getAssignedMidwives().size() >= 3) {
+        int assignedCount = (clinic.getMainMidwife() != null ? 1 : 0) + clinic.getReservedMidwives().size();
+        if (assignedCount >= 3) {
             response.setResponseCode("400");
             response.setResponseMzg("Clinic already has the maximum number of midwives.");
             return response;
@@ -245,8 +250,15 @@ public class AdminServiceIMPL implements AdminService {
         }
 
         // Proceed with assignment
-        midwife.getAssignedClinics().add(clinic);
-        clinic.getAssignedMidwives().add(midwife);
+//        midwife.getAssignedClinics().add(clinic);
+//        clinic.getAssignedMidwives().add(midwife);
+
+        // Assign as main midwife if none exists, else as reserved midwife
+        if (clinic.getMainMidwife() == null) {
+            clinic.setMainMidwife(midwife);
+        } else {
+            clinic.getReservedMidwives().add(midwife);
+        }
 
         midwifeRepo.save(midwife);
         clinicRepo.save(clinic);

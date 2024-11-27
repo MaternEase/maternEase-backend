@@ -22,6 +22,7 @@ public class MotherRegistrationDTO {
     private Double weight;
     private Double bmi;
     private Integer poa;
+    private Date lastMenstrualDate;
     private String husbandName;
     private Integer husbandAge;
     private String motherEducationLevel;

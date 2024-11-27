@@ -7,8 +7,13 @@ import com.maternease.maternease.dto.request.ClinicRecordUpdateDTO;
 import com.maternease.maternease.dto.request.MotherRegistrationDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
+
+import com.maternease.maternease.dto.response.MidwifeBookingDetailsDTO;
+import com.maternease.maternease.service.BookingService;
+
 import com.maternease.maternease.dto.response.ResClinicRecordDTO;
 import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
+
 import com.maternease.maternease.service.MidwifeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +29,8 @@ public class MidwifeController {
 
     @Autowired
     private MidwifeService midwifeService;
+    @Autowired
+    private BookingService bookingService;
 
     @GetMapping(path = "/sss")
     public String sadee(){
@@ -79,9 +86,22 @@ public class MidwifeController {
         return ResponseEntity.ok(updatedDetails);
     }
 
+
+
+    @GetMapping("/bookings")
+    public ResponseEntity<List<MidwifeBookingDetailsDTO>> getAllBookingDetails() {
+        List<MidwifeBookingDetailsDTO> bookingDetails = bookingService.getAllBookingDetails();
+        return ResponseEntity.ok(bookingDetails);
+    }
+
+//     @PostMapping(path = "/clinic-record")
+//     public ResponseEntity<ResponseDTO> addClinicRecord(@RequestBody ClinicRecordUpdateDTO clinicRecordUpdateDTO){
+//         ResponseDTO response = midwifeService.addClinicRecord(clinicRecordUpdateDTO);
+
     @PostMapping(path = "/clinic-record/{motherId}")
     public ResponseEntity<ResponseDTO> addClinicRecord(@PathVariable String motherId, @RequestBody ClinicRecordUpdateDTO clinicRecordUpdateDTO){
         ResponseDTO response = midwifeService.addClinicRecord(motherId ,clinicRecordUpdateDTO);
+
         return ResponseEntity.ok(response);
     }
 
@@ -89,6 +109,7 @@ public class MidwifeController {
     public ResponseEntity<List<ResClinicRecordDTO>> getClinicRecord(@PathVariable String motherId){
         List<ResClinicRecordDTO> recordDetails =(midwifeService.getClinicRecord(motherId));
         return ResponseEntity.ok(recordDetails);
+
     }
 
 }

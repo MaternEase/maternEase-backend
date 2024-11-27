@@ -9,6 +9,7 @@ public class ResClinicRecordDTO {
 
     private Integer weeksFromPregnancy;
     private Float fundalHeight;
+    private Float newWeight;
     private Integer fetalHeartRate;
     private Boolean anemia;
     private Boolean fetalMovement;
