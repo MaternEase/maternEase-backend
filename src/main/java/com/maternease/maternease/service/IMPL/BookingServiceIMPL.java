@@ -21,48 +21,12 @@ import java.util.List;
 @Service
 public class BookingServiceIMPL implements BookingService {
 
-    private BookingRepo bookingRepo;
-    private MotherRepo motherRepo;
-    private TimeslotRepo timeslotRepo;
-
     @Autowired
-    public BookingServiceIMPL(BookingRepo bookingRepo, MotherRepo motherRepo, TimeslotRepo timeslotRepo) {
-        this.bookingRepo = bookingRepo;
-        this.motherRepo = motherRepo;
-        this.timeslotRepo = timeslotRepo;
-    }
-
-    @PostConstruct
-    private void initializeDummyData() {
-        ClinicSch clinicSch = new ClinicSch();
-        clinicSch.setId(1L);
-        clinicSch.setMonth("January 2024");
-
-        Timeslot timeslot1 = new Timeslot();
-        timeslot1.setTimeslotId(1L);
-        timeslot1.setTime("10:00 AM - 11:00 AM");
-        timeslot1.setClinicSch(clinicSch);
-
-        Timeslot timeslot2 = new Timeslot();
-        timeslot2.setTimeslotId(2L);
-        timeslot2.setTime("11:00 AM - 12:00 PM");
-        timeslot2.setClinicSch(clinicSch);
-
-        Timeslot timeslot3 = new Timeslot();
-        timeslot2.setTimeslotId(3L);
-        timeslot2.setTime("12:00 AM - 13:00 PM");
-        timeslot2.setClinicSch(clinicSch);
-
-        List<Timeslot> timeslots = new ArrayList<>();
-        timeslots.add(timeslot1);
-        timeslots.add(timeslot2);
-        timeslots.add(timeslot3);
-        clinicSch.setTimeslots(timeslots);
-
-        timeslotRepo.save(timeslot1);
-        timeslotRepo.save(timeslot2);
-        timeslotRepo.save(timeslot3);
-    }
+    private BookingRepo bookingRepo;
+    @Autowired
+    private MotherRepo motherRepo;
+    @Autowired
+    private TimeslotRepo timeslotRepo;
 
     @Override
     public BookingResponseDTO bookTimeslot(BookingRequestDTO bookingRequest) {
