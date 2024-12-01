@@ -3,6 +3,7 @@ import com.maternease.maternease.dto.ClinicDTO;
 import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
+import com.maternease.maternease.dto.response.ClinicNameDTO;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface AdminService {
     List<ClinicDTO> getClinicsNeedingMidwives();
 
     ResponseDTO assignMidwifeToClinic(MidwifeClinicAssignmentDTO assignment);
+
+    List<ClinicNameDTO> getAllClinicNames();
 }

@@ -4,6 +4,7 @@ import com.maternease.maternease.dto.ClinicDTO;
 import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
+import com.maternease.maternease.dto.response.ClinicNameDTO;
 import com.maternease.maternease.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,15 @@ public class AdminController {
     public ResponseEntity<List<ClinicDTO>> getAllClinics() {
         return ResponseEntity.ok(adminService.getAllClinics());
     }
+
+    @GetMapping("/clinic-names")
+    public ResponseEntity<List<ClinicNameDTO>> getAllClinicNames() {
+        List<ClinicNameDTO> clinicNames = adminService.getAllClinicNames();
+        return ResponseEntity.ok(clinicNames);
+
+    }
+
+
 
     @GetMapping("/midwives")
     public ResponseEntity<List<ReqRes>> getAllMidwives() {

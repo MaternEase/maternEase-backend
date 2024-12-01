@@ -14,8 +14,6 @@ public class Clinic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int clinicId;
 
-    private String clinicNo; // Assigned using generateClinicNo method
-
 //    private String gramaniDivison;
 
     @ElementCollection
@@ -28,15 +26,12 @@ public class Clinic {
     private String PHMArea;
 
     private String clinicName;
+    private String location;
 
-    // Many-to-many relationship with Midwife
-//    @ManyToMany(mappedBy = "assignedClinics")
-//    private List<Midwife> assignedMidwives;
+    private String midwifeOne;
+    private String midwifeTwo;
+    private String midwifeThree;
 
-    // Relationship with midwives
-    @ManyToOne
-    @JoinColumn(name = "main_midwife_id")
-    private Midwife mainMidwife; // Main midwife for the clinic
 
     @ManyToMany
     @JoinTable(
@@ -46,9 +41,4 @@ public class Clinic {
     )
     private List<Midwife> reservedMidwives; // Reserved midwives
 
-
-    //generate clinic number
-    public static String generateClinicNo(String areaCode, int clinicNumber) {
-        return areaCode + String.format("%03d", clinicNumber); // Format: AB001
-    }
 }

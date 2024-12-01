@@ -55,7 +55,6 @@ public class MotherServiceIMPL implements MotherService {
 
             mProfileDetailsDTO.setMOHArea(clinic.getMOHArea());
             mProfileDetailsDTO.setPHMArea(clinic.getPHMArea());
-            mProfileDetailsDTO.setClinicNo(clinic.getClinicNo());
 
         }
         return mProfileDetailsDTO;
