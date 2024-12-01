@@ -4,6 +4,7 @@ import com.maternease.maternease.dto.ClinicDTO;
 import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
+import com.maternease.maternease.dto.response.ClinicNameDTO;
 import com.maternease.maternease.entity.Clinic;
 import com.maternease.maternease.entity.Midwife;
 import com.maternease.maternease.entity.OurUsers;
@@ -46,6 +47,13 @@ public class AdminServiceIMPL implements AdminService {
         int num = Integer.parseInt(latestId.substring(3)) + 1;
         return "MID" + String.format("%04d", num);
     }
+
+//    private String generateClinicId() {
+//        Optional<Clinic> latestClinic = clinicRepo.findFirstByOrderByMidIdDesc();
+//        String latestId = latestClinic.isPresent() ? latestClinic.get().getClinicId() : "MID0000";
+//        int num = Integer.parseInt(latestId.substring(3)) + 1;
+//        return "MID" + String.format("%04d", num);
+//    }
 
 
     @Override
@@ -203,7 +211,7 @@ public class AdminServiceIMPL implements AdminService {
         return clinicRepo.findAll().stream()
 //                .filter(clinic -> clinic.getAssignedMidwives().size() < 2)
                 .filter(clinic -> {
-                    int assignedCount = (clinic.getMainMidwife() != null ? 1 : 0) + clinic.getReservedMidwives().size();
+                    int assignedCount = (clinic.getMidwifeOne() != null ? 1 : 0) + clinic.getReservedMidwives().size();
                     return assignedCount < 3; // Assuming max of 3 midwives per clinic
                 })
                 .map(clinic -> modelMapper.map(clinic, ClinicDTO.class))
@@ -212,59 +220,75 @@ public class AdminServiceIMPL implements AdminService {
 
     @Override
     public ResponseDTO assignMidwifeToClinic(MidwifeClinicAssignmentDTO assignment) {
-        ResponseDTO response = new ResponseDTO();
-
-        Optional<Midwife> midwifeOpt = midwifeRepo.findById(assignment.getMidwifeId());
-        Optional<Clinic> clinicOpt = clinicRepo.findById(assignment.getClinicId());
-
-        if (midwifeOpt.isEmpty() || clinicOpt.isEmpty()) {
-            response.setResponseCode("404");
-            response.setResponseMzg("Midwife or Clinic not found.");
-            return response;
-        }
-
-        Midwife midwife = midwifeOpt.get();
-        Clinic clinic = clinicOpt.get();
-
-        // Check midwife assignment eligibility
-        if (midwife.getAssignedClinics().size() >= 3) {
-            response.setResponseCode("400");
-            response.setResponseMzg("Midwife already assigned to maximum number of clinics.");
-            return response;
-        }
-
-        // Check clinic's midwife count
-        // Check if the clinic has reached the midwife assignment limit
-        int assignedCount = (clinic.getMainMidwife() != null ? 1 : 0) + clinic.getReservedMidwives().size();
-        if (assignedCount >= 3) {
-            response.setResponseCode("400");
-            response.setResponseMzg("Clinic already has the maximum number of midwives.");
-            return response;
-        }
-
-        // Check if midwife is already assigned to this clinic
-        if (midwife.getAssignedClinics().contains(clinic)) {
-            response.setResponseCode("400");
-            response.setResponseMzg("Midwife is already assigned to this clinic.");
-            return response;
-        }
+//        ResponseDTO response = new ResponseDTO();
+//
+//        Optional<Midwife> midwifeOpt = midwifeRepo.findById(assignment.getMidwifeId());
+//        Optional<Clinic> clinicOpt = clinicRepo.findById(assignment.getClinicId());
+//
+//        if (midwifeOpt.isEmpty() || clinicOpt.isEmpty()) {
+//            response.setResponseCode("404");
+//            response.setResponseMzg("Midwife or Clinic not found.");
+//            return response;
+//        }
+//
+//        Midwife midwife = midwifeOpt.get();
+//        Clinic clinic = clinicOpt.get();
+//
+//        // Check midwife assignment eligibility
+//        if (midwife.getAssignedClinics().size() >= 3) {
+//            response.setResponseCode("400");
+//            response.setResponseMzg("Midwife already assigned to maximum number of clinics.");
+//            return response;
+//        }
+//
+//        // Check clinic's midwife count
+//        // Check if the clinic has reached the midwife assignment limit
+//        int assignedCount = (clinic.getMainMidwife() != null ? 1 : 0) + clinic.getReservedMidwives().size();
+//        if (assignedCount >= 3) {
+//            response.setResponseCode("400");
+//            response.setResponseMzg("Clinic already has the maximum number of midwives.");
+//            return response;
+//        }
+//
+//        // Check if midwife is already assigned to this clinic
+//        if (midwife.getAssignedClinics().contains(clinic)) {
+//            response.setResponseCode("400");
+//            response.setResponseMzg("Midwife is already assigned to this clinic.");
+//            return response;
+//        }
 
         // Proceed with assignment
 //        midwife.getAssignedClinics().add(clinic);
 //        clinic.getAssignedMidwives().add(midwife);
 
         // Assign as main midwife if none exists, else as reserved midwife
-        if (clinic.getMainMidwife() == null) {
-            clinic.setMainMidwife(midwife);
-        } else {
-            clinic.getReservedMidwives().add(midwife);
-        }
-
-        midwifeRepo.save(midwife);
-        clinicRepo.save(clinic);
-
-        response.setResponseCode("200");
-        response.setResponseMzg("Midwife assigned to the clinic successfully.");
-        return response;
+//        if (clinic.getMainMidwife() == null) {
+//            clinic.setMainMidwife(midwife);
+//        } else {
+//            clinic.getReservedMidwives().add(midwife);
+//        }
+//
+//        midwifeRepo.save(midwife);
+//        clinicRepo.save(clinic);
+//
+//        response.setResponseCode("200");
+//        response.setResponseMzg("Midwife assigned to the clinic successfully.");
+//        return response;
+        return new ResponseDTO();
     }
+
+    @Override
+    public List<ClinicNameDTO> getAllClinicNames() {
+        List<Clinic> clinics = clinicRepo.findAll();
+        return clinics.stream()
+                .map(clinic -> {
+                    ClinicNameDTO clinicNameDTO = new ClinicNameDTO();
+                    clinicNameDTO.setClinicName(clinic.getClinicName());
+                    return clinicNameDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+
+
 }
