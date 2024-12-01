@@ -1,6 +1,7 @@
 package com.maternease.maternease.service.IMPL;
 
 import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
+import com.maternease.maternease.dto.ChildDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
@@ -303,4 +304,40 @@ public class MidwifeServiceIMPL implements MidwifeService {
     }
 
 
-}
+    @Override
+    public List<ChildDTO> getChildDetails() {
+        List<Child> ChildDetails = childRepo.findAll();
+
+        return ChildDetails.stream().map(child -> {
+            ChildDTO eChildDTO = new ChildDTO();
+
+            // Map the relevant fields from the Child entity to the DTO
+            eChildDTO.setId(child.getId());
+            eChildDTO.setGuardianName(child.getOurUsers().getFullName());
+
+
+            return eChildDTO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ChildDTO> getAllChildren() {
+        // map to DTO
+        // TODO: findAll
+        return childRepo.findAll().stream().map(
+                child -> new ChildDTO(
+                        child.getId(),
+                        child.getName(),
+                        child.getAge(),
+                        child.getGuardianName(),
+                        child.getContactNumber(),
+                        child.getCondition(),
+                        child.getReferToDoctor()
+                )
+                ).collect(Collectors.toList());
+
+
+        }
+    }
+
+

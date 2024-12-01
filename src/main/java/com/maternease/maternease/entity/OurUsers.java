@@ -60,6 +60,9 @@ public class OurUsers implements UserDetails {
     private String childId;
 
     @Column(length = 255, nullable = true)
+    private String guardianName;
+
+    @Column(length = 255, nullable = true)
     private String clinicName;
 
 //    @ManyToOne
