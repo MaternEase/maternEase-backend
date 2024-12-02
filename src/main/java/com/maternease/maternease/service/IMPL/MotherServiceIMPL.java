@@ -4,10 +4,7 @@ import com.maternease.maternease.dto.AntenatalRiskConditionSlimDTO;
 import com.maternease.maternease.dto.response.MProfileDetailsDTO;
 import com.maternease.maternease.entity.*;
 import com.maternease.maternease.exception.MotherNotFoundException;
-import com.maternease.maternease.repository.ClinicRecordRepo;
-import com.maternease.maternease.repository.ClinicRepo;
-import com.maternease.maternease.repository.MotherRepo;
-import com.maternease.maternease.repository.OurUsersRepo;
+import com.maternease.maternease.repository.*;
 import com.maternease.maternease.service.MotherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,6 +28,10 @@ public class MotherServiceIMPL implements MotherService {
 
     @Autowired
     private ClinicRecordRepo clinicRecordRepo;
+
+    @Autowired
+    private ClinicScheduleRepo clinicScheduleRepo;
+
 
     @Override
     public MProfileDetailsDTO getMotherProfile(String motherId) {
@@ -107,5 +108,17 @@ public class MotherServiceIMPL implements MotherService {
             chartData.add(point);
         }
         return chartData;
+    }
+
+    @Override
+    public List<ClinicSchedules> getClinicSchedules(int userId) {
+        List<ClinicSchedules> clinicSchedules = new ArrayList<>();
+        try {
+            Mother mother = motherRepo.getMotherDetails(userId);
+            clinicSchedules = clinicScheduleRepo.getClinicSchedule(mother.getClinicId());
+        } catch (Exception e){
+            System.out.println("Error in getting clinic schedules");
+        }
+        return clinicSchedules;
     }
 }

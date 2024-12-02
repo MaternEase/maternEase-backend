@@ -6,17 +6,22 @@ import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
 import com.maternease.maternease.dto.response.ClinicNameDTO;
 import com.maternease.maternease.entity.Clinic;
+import com.maternease.maternease.entity.ClinicSchedules;
 import com.maternease.maternease.entity.Midwife;
 import com.maternease.maternease.entity.OurUsers;
 import com.maternease.maternease.repository.ClinicRepo;
+import com.maternease.maternease.repository.ClinicScheduleRepo;
 import com.maternease.maternease.repository.MidwifeRepo;
 import com.maternease.maternease.repository.OurUsersRepo;
 import com.maternease.maternease.service.AdminService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +41,9 @@ public class AdminServiceIMPL implements AdminService {
 
     @Autowired
     private MidwifeRepo midwifeRepo;
+
+    @Autowired
+    private ClinicScheduleRepo clinicScheduleRepo;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -288,7 +296,45 @@ public class AdminServiceIMPL implements AdminService {
                 })
                 .collect(Collectors.toList());
     }
+    @Scheduled(cron = "0 37 20 1 * ?")
+    @Override
+    public boolean isFirstClinicScheduled() {
+        boolean isCreated = false;
+        List<Clinic> clinicList = clinicRepo.findAll();
+        try {
+            for (Clinic clinic : clinicList) {
+                ClinicSchedules clinicSchedules = new ClinicSchedules();
 
+                // Get the current date and next month
+                LocalDate today = LocalDate.now();
+                LocalDate nextMonth = today.plusMonths(1).withDayOfMonth(1);
 
+                // Get the first day of next month and the day of the week
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(nextMonth.getYear(), nextMonth.getMonthValue() - 1, 1);  // Month is 0-based
 
+                int firstDayOfMonth = calendar.get(Calendar.DAY_OF_WEEK);
+                int clinicDayOfWeek = clinic.getClinicDay();  // Get the day of the week (e.g., Monday = 2, Sunday = 1)
+
+                // Calculate the days to add to get to the correct weekday of the first week
+                int daysToAdd = (clinicDayOfWeek - firstDayOfMonth + 7) % 7;
+                calendar.add(Calendar.DAY_OF_MONTH, daysToAdd);  // Move to the correct day in the first week
+
+                // Adjust to the correct week (1, 2, 3, or 4)
+                calendar.add(Calendar.WEEK_OF_MONTH, clinic.getFirstClinicWeek() - 1);  // Adjust for the clinic's week
+
+                clinicSchedules.setClinicDate(calendar.getTime());
+                clinicSchedules.setClinic(clinic);
+                clinicSchedules.setClinicType("Regular Clinic");
+
+                System.out.println("Opening schedules for: " + nextMonth.getMonth() + " " + nextMonth.getYear());
+                clinicScheduleRepo.save(clinicSchedules);
+                isCreated = true;
+            }
+        }catch (Exception e){
+            System.out.println("Error creating the schedule");
+            isCreated = false;
+        }
+        return isCreated;
+    }
 }
