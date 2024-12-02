@@ -31,6 +31,9 @@ public class Clinic {
     private String midwifeOne;
     private String midwifeTwo;
     private String midwifeThree;
+    private int firstClinicWeek;
+    private int secondClinicWeek;
+    private int clinicDay;
 
 
     @ManyToMany
@@ -40,5 +43,4 @@ public class Clinic {
             inverseJoinColumns = @JoinColumn(name = "midwife_id")
     )
     private List<Midwife> reservedMidwives; // Reserved midwives
-
 }

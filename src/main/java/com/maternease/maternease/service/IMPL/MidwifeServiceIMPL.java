@@ -17,8 +17,13 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -58,6 +63,12 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BlogRepo blogRepo;
+
+    private static final String UPLOAD_DIR = "uploads/";  // Directory to store files
+
 
 
     public String generateMotherId() {
@@ -376,6 +387,46 @@ public class MidwifeServiceIMPL implements MidwifeService {
         return clinicRecords.stream()
                 .map(record -> modelMapper.map(record, ResClinicRecordDTO.class))
                 .toList();
+    }
+
+    @Override
+    public ResponseDTO createBlogPost(String title, String content, String postType, MultipartFile media) throws IOException {
+        String filePath = null;
+        if (media != null && !media.isEmpty()) {
+            filePath = saveFile(media);
+        }
+
+        Blog blog = new Blog();
+        blog.setTitle(title);
+        blog.setContent(content);
+        blog.setPostType(postType);
+        blog.setMediaPath(filePath); // Store the file path in the database
+
+        blogRepo.save(blog);
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("200");
+        response.setResponseMzg("Post created successfully.");
+
+        return response;
+    }
+
+    // Method to save a file and return its path
+    public String saveFile(MultipartFile file) throws IOException {
+        Path path = Paths.get(UPLOAD_DIR);
+        if (!Files.exists(path)) {
+            Files.createDirectories(path);
+        }
+
+        String fileName = file.getOriginalFilename();
+        Path filePath = path.resolve(fileName);
+        Files.copy(file.getInputStream(), filePath);
+
+        return UPLOAD_DIR + fileName;  // Return the path to store in the DB
+    }
+
+    @Override
+    public List<Blog> getAllBlogPosts() {
+        return blogRepo.findAll();
     }
 
 

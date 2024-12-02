@@ -9,7 +9,10 @@ import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
 import com.maternease.maternease.dto.response.ResClinicRecordDTO;
 import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
+import com.maternease.maternease.entity.Blog;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface MidwifeService {
@@ -31,4 +34,8 @@ public interface MidwifeService {
     ResponseDTO addClinicRecord(String motherId,ClinicRecordUpdateDTO clinicRecordUpdateDTO);
 
     List<ResClinicRecordDTO> getClinicRecord(String motherId);
+
+    ResponseDTO createBlogPost(String title, String content, String postType, MultipartFile media) throws IOException;
+
+    List<Blog> getAllBlogPosts();
 }

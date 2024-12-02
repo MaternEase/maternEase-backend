@@ -4,6 +4,7 @@ import com.maternease.maternease.dto.request.BookingRequestDTO;
 import com.maternease.maternease.dto.response.BookingResponseDTO;
 import com.maternease.maternease.dto.response.MProfileDetailsDTO;
 import com.maternease.maternease.entity.AntenatalRiskCondition;
+import com.maternease.maternease.entity.ClinicSchedules;
 import com.maternease.maternease.service.BookingService;
 import com.maternease.maternease.service.MotherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,10 @@ public class MotherController {
         return ResponseEntity.ok(data);
     }
 
+    @GetMapping("/get-schedules/{userId}")
+    public ResponseEntity<List<ClinicSchedules>> getClinicSchedules(@PathVariable int userId){
+        List<ClinicSchedules> clinicSchedules = motherService.getClinicSchedules(userId);
+        return ResponseEntity.ok(clinicSchedules);
+    }
 
 }

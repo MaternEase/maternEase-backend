@@ -9,18 +9,27 @@ import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
 
 import com.maternease.maternease.dto.response.MidwifeBookingDetailsDTO;
+import com.maternease.maternease.entity.Blog;
 import com.maternease.maternease.service.BookingService;
 
 import com.maternease.maternease.dto.response.ResClinicRecordDTO;
 import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
 
 import com.maternease.maternease.service.MidwifeService;
+import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
+
+//import static com.maternease.maternease.service.IMPL.MidwifeServiceIMPL.UPLOAD_DIR;
 
 @RestController
 @RequestMapping("/api/v1/midwife")
@@ -31,6 +40,9 @@ public class MidwifeController {
     private MidwifeService midwifeService;
     @Autowired
     private BookingService bookingService;
+
+    private static final String UPLOAD_DIR = "uploads";
+
 
     @GetMapping(path = "/sss")
     public String sadee(){
@@ -111,5 +123,47 @@ public class MidwifeController {
         return ResponseEntity.ok(recordDetails);
 
     }
+
+    @PostMapping(path = "/blog-create")
+    public ResponseEntity<ResponseDTO> createBlogPost(
+            @RequestParam String title,
+            @RequestParam String content,
+            @RequestParam String postType,
+            @RequestParam(required = false) MultipartFile media) {
+
+        try {
+            ResponseDTO response = midwifeService.createBlogPost(title, content, postType, media);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(new ResponseDTO());
+        }
+    }
+
+    // Endpoint to get all blog posts
+    @GetMapping(path = "/blogs-get-all")
+    public ResponseEntity<List<Blog>> getAllBlogPosts() {
+        List<Blog> blogPosts = midwifeService.getAllBlogPosts();
+        return ResponseEntity.ok(blogPosts);
+    }
+
+    @GetMapping("/uploads/{fileName}")
+    public ResponseEntity<Resource> serveFile(@PathVariable String fileName) {
+        // Specify the directory where files are stored
+        Path filePath = Paths.get(UPLOAD_DIR).resolve(fileName);
+
+        // Create a Resource object from the file
+        Resource resource = (Resource) new FileSystemResource(filePath.toFile());
+
+        // Check if the file exists
+        if (!((FileSystemResource) resource).exists()) {
+            return ResponseEntity.notFound().build(); // Return 404 if file is not found
+        }
+
+        // Return the file with content disposition header (to handle different file types)
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + ((FileSystemResource) resource).getFilename() + "\"")
+                .body(resource);
+    }
+
 
 }

@@ -116,6 +116,7 @@ public class UsersManagementService {
             response.setStatusCode(200);
             response.setToken(jwt);
             response.setRole(user.getRole());
+            response.setUserId(user.getId());
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMassage("Successfully logged in");

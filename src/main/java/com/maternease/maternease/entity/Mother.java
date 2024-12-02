@@ -14,7 +14,7 @@ public class Mother {
     @Id
     private String motherId;
     private int cardId;
-    private String clinicId;
+    private int clinicId;
     private String contactNo;
     private int status;
     private String nic;

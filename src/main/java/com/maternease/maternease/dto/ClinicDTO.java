@@ -16,6 +16,10 @@ public class ClinicDTO {
     private String midwifeOne;
     private String midwifeTwo;
     private String midwifeThree;
+
+    private int firstClinicWeek;
+    private int secondClinicWeek;
+    private int clinicDay;
 //    private List<Long> userIds;         // List of User IDs associated with the clinic
 //    private List<Long> attendeeIds;     // List of ClinicAttendee IDs associated with the clinic
 }

@@ -35,6 +35,7 @@ public class ReqRes {
     private String gender;
     private String role;
     private String childId;
+    private int userId;
     private OurUsers ourUsers;
     private Midwife midwife;
     private List<OurUsers> ourUsersList;
