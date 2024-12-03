@@ -4,6 +4,8 @@ import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
 import com.maternease.maternease.dto.response.ClinicNameDTO;
+import com.maternease.maternease.entity.Midwife;
+import com.maternease.maternease.entity.OurUsers;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -26,4 +28,13 @@ public interface AdminService {
     List<ClinicNameDTO> getAllClinicNames();
 
     boolean isFirstClinicScheduled();
+
+    OurUsers getMainMidwifeForClinic(int clinicId);
+
+    List<OurUsers> getMidwife2And3Dropdown();
+
+
+    List<String> getMidwivesNotInClinic();
+
+    ClinicDTO getClinicDetail(String clinicName);
 }

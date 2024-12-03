@@ -5,6 +5,9 @@ import com.maternease.maternease.dto.ReqRes;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.MidwifeClinicAssignmentDTO;
 import com.maternease.maternease.dto.response.ClinicNameDTO;
+import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
+import com.maternease.maternease.entity.Midwife;
+import com.maternease.maternease.entity.OurUsers;
 import com.maternease.maternease.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -49,6 +52,18 @@ public class AdminController {
 
     }
 
+    @GetMapping("/clinicDetails/{clinicName}")
+    public ResponseEntity<ClinicDTO> getClinicDetail(@PathVariable String clinicName) {
+        ClinicDTO oneClinicDetails = adminService.getClinicDetail(clinicName);
+            return ResponseEntity.ok(oneClinicDetails);
+
+    }
+
+//    @GetMapping(path = "/get-basic-details/{motherId}")
+//    public ResponseEntity<ResMBasicDetailsDTO> getBasicDetails(@PathVariable String motherId){
+//        ResMBasicDetailsDTO basicDetails = midwifeService.getBasicDetails(motherId);
+//        return ResponseEntity.ok(basicDetails);
+//    }
 
 
     @GetMapping("/midwives")
@@ -70,6 +85,32 @@ public class AdminController {
     public ResponseEntity<ResponseDTO> assignMidwifeToClinic(@RequestBody MidwifeClinicAssignmentDTO assignment) {
         ResponseDTO response = adminService.assignMidwifeToClinic(assignment);
         return ResponseEntity.ok(response);
+    }
+
+
+    // Controller to get midwife1 (main midwife) for a clinic
+    @GetMapping("/getMidwife1")
+    public OurUsers getMidwife1(@RequestParam int clinicId) {
+        return adminService.getMainMidwifeForClinic(clinicId);  // Assuming you have logic to get the main midwife (midwife1)
+    }
+
+    // Controller to get available midwife2 (supporting midwife) across all clinics
+    @GetMapping("/getMidwife2")
+    public List<OurUsers> getMidwife2() {
+        // Get the list of available midwives for midwife2 (who are not assigned to more than 3 clinics)
+        return adminService.getMidwife2And3Dropdown();
+    }
+
+    // Controller to get available midwife3 (supporting midwife) across all clinics
+    @GetMapping("/getMidwife3")
+    public List<OurUsers> getMidwife3() {
+        // Get the list of available midwives for midwife3 (who are not assigned to more than 3 clinics)
+        return adminService.getMidwife2And3Dropdown();
+    }
+
+    @GetMapping("/midwives-not-in-clinic")
+    public List<String> getMidwivesNotInClinic() {
+        return adminService.getMidwivesNotInClinic();
     }
 
 }

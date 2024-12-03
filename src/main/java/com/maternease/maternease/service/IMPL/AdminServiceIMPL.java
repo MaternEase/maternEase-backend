@@ -70,11 +70,11 @@ public class AdminServiceIMPL implements AdminService {
         ReqRes resp = new ReqRes();
 
         try {
-            if (req.getPassword() == null || req.getPassword().isEmpty()) {
-                resp.setStatusCode(400);
-                resp.setMassage("Password cannot be null or empty");
-                return resp;
-            }
+//            if (req.getPassword() == null || req.getPassword().isEmpty()) {
+//                resp.setStatusCode(400);
+//                resp.setMassage("Password cannot be null or empty");
+//                return resp;
+//            }
 
             Optional<OurUsers> existingUserByEmail = ourUsersRepo.findByEmail(req.getEmail());
             if (existingUserByEmail.isPresent()) {
@@ -88,7 +88,7 @@ public class AdminServiceIMPL implements AdminService {
             ourUser.setFullName(req.getFullName());
             ourUser.setNic(req.getNic());
             ourUser.setCreatedAt(new Date());  // Automatically set to the current timestamp
-            ourUser.setPassword(passwordEncoder.encode(req.getPassword()));
+            ourUser.setPassword(passwordEncoder.encode(req.getNic()));
             ourUser.setContactNo(req.getContactNo());
             ourUser.setDob(req.getDob());
             ourUser.setGender(req.getGender());
@@ -296,7 +296,7 @@ public class AdminServiceIMPL implements AdminService {
                 })
                 .collect(Collectors.toList());
     }
-    @Scheduled(cron = "0 37 20 1 * ?")
+    @Scheduled(cron = "0 23 14 3 * ?")
     @Override
     public boolean isFirstClinicScheduled() {
         boolean isCreated = false;
@@ -337,4 +337,69 @@ public class AdminServiceIMPL implements AdminService {
         }
         return isCreated;
     }
+
+    @Override
+    public OurUsers getMainMidwifeForClinic(int clinicId) {
+        return null;
+    }
+
+    @Override
+    public List<String> getMidwivesNotInClinic() {
+        // Get all midwife names in the Clinic midwifeOne column
+        List<String> clinicMidwives = clinicRepo.findAllfullName();
+
+        // Get all midwives from the OurUsers table with the role "MIDWIFE"
+        List<OurUsers> midwives = ourUsersRepo.findByRole("MIDWIFE");
+
+        // Filter out midwives whose name is in the clinicMidwives list (midwifeOne)
+        List<String> midwivesNotInClinic = midwives.stream()
+                .map(OurUsers::getFullName)
+                .filter(midwife -> !clinicMidwives.contains(midwife))
+                .collect(Collectors.toList());
+
+        return midwivesNotInClinic;
+    }
+
+    @Override
+    public ClinicDTO getClinicDetail(String clinicName) {
+        // Find clinic by clinic name
+        Clinic clinic = clinicRepo.findByClinicName(clinicName);
+
+        if (clinic == null) {
+            // Handle the case where the clinic is not found
+            throw new RuntimeException("Clinic not found with name: " + clinicName);
+        }
+
+        // Use ModelMapper to convert Clinic entity to ClinicDTO
+        return modelMapper.map(clinic, ClinicDTO.class);
+    }
+
+
+
+    // Method to get available midwives for midwife2 and midwife3 across all clinics
+    public List<OurUsers> getMidwife2And3Dropdown() {
+        // Fetch all midwives with the role "MIDWIFE"
+        List<OurUsers> allMidwives = ourUsersRepo.findByRole("MIDWIFE");
+
+        // Fetch all clinics
+        List<Clinic> allClinics = clinicRepo.findAll();
+
+        // Filter out midwives who are assigned to 3 or more clinics
+        List<OurUsers> availableMidwives = allMidwives.stream()
+                .filter(midwife -> {
+                    // Count the number of clinics the midwife is assigned to
+                    long assignedClinicCount = allClinics.stream()
+                            .filter(clinic -> clinic.getReservedMidwives().contains(midwife)) // Check if the midwife is assigned to the clinic
+                            .count();
+
+                    // If midwife is assigned to less than 3 clinics, they are available for assignment
+                    return assignedClinicCount < 3;
+                })
+                .collect(Collectors.toList());
+
+        return availableMidwives;
+
+    }
+
+
 }

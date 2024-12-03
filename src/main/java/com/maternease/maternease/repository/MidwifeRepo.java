@@ -17,4 +17,6 @@ public interface MidwifeRepo extends JpaRepository<Midwife,Integer> {
     List<Midwife> findAssignableMidwives(@Param("maxClinicAssignments") int maxClinicAssignments);
 
     Optional<Midwife> findFirstByOrderByMidIdDesc();
+
+
 }
