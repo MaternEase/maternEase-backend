@@ -11,6 +11,7 @@ import com.maternease.maternease.dto.response.EMotherTableDTO;
 import com.maternease.maternease.dto.response.ResClinicRecordDTO;
 import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
 import com.maternease.maternease.entity.Blog;
+import com.maternease.maternease.entity.OurUsers;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -48,5 +49,7 @@ public interface MidwifeService {
     ResponseDTO createBlogPost(String title, String content, String postType, MultipartFile media) throws IOException;
 
     List<Blog> getAllBlogPosts();
+
+    List<OurUsers> getAllMothers();
 
 }

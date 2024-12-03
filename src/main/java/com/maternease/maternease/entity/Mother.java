@@ -39,6 +39,9 @@ public class Mother {
     @JoinColumn(name = "ar_condition_id", referencedColumnName = "id")
     private AntenatalRiskCondition antenatalRiskCondition;
 
+    @OneToOne
+    @JoinColumn(name = "location_id", referencedColumnName = "id")
+    private Location location;
 
 
 

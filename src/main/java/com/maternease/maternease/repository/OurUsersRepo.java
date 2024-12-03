@@ -18,5 +18,7 @@ public interface OurUsersRepo extends JpaRepository<OurUsers, Integer> {
 
     Optional<OurUsers> findByChildId(String childId);  // Added method for child login
 
+    Optional<OurUsers> findById(OurUsersId id); // Custom method for composite primary key
+
 
 }

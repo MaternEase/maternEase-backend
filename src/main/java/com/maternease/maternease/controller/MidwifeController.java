@@ -5,22 +5,27 @@ import com.maternease.maternease.dto.ChildDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.ClinicRecordUpdateDTO;
+import com.maternease.maternease.dto.request.LocationRequestDTO;
 import com.maternease.maternease.dto.request.MotherRegistrationDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
 
 import com.maternease.maternease.dto.response.MidwifeBookingDetailsDTO;
 import com.maternease.maternease.entity.Blog;
+import com.maternease.maternease.entity.OurUsers;
 import com.maternease.maternease.service.BookingService;
 
 import com.maternease.maternease.dto.response.ResClinicRecordDTO;
 import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
 
+import com.maternease.maternease.service.LocationService;
 import com.maternease.maternease.service.MidwifeService;
+import com.maternease.maternease.service.MotherService;
 import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +46,12 @@ public class MidwifeController {
     private MidwifeService midwifeService;
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private LocationService locationService;
+
+    @Autowired
+    private MotherService motherService;
 
     private static final String UPLOAD_DIR = "uploads";
 
@@ -187,5 +198,15 @@ public class MidwifeController {
                 .body(resource);
     }
 
+    @GetMapping("/get-location/{motherId}")
+    public ResponseEntity<LocationRequestDTO> getLocationByUserId(@PathVariable("motherId") int userId) {
+        LocationRequestDTO locationDTO = locationService.getLocationByUserId(userId);
+        return new ResponseEntity<>(locationDTO, HttpStatus.OK);
+    }
 
+    @GetMapping("/get-all-mothers")
+    public ResponseEntity<List<OurUsers>> getAllMothers() {
+        List<OurUsers> mothers = midwifeService.getAllMothers();
+        return ResponseEntity.ok(mothers);
+    }
 }
