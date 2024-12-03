@@ -38,6 +38,14 @@ public class MotherController {
         return ResponseEntity.ok(response);
     }
 
+
+    @GetMapping("/{motherId}/booked-timeslots")
+    public ResponseEntity<List<BookingResponseDTO>> getBookedTimeslotsByMother(@PathVariable String motherId) {
+        List<BookingResponseDTO> bookings = bookingService.getBookedTimeslotsByMother(motherId);
+        return ResponseEntity.ok(bookings);
+    }
+
+
     @GetMapping("/timeslots/{id}/status")
     public ResponseEntity<String> getTimeslotBookingStatus(@PathVariable Long id) {
         String status = bookingService.getBookingStatusForTimeslot(id);

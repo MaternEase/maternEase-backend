@@ -14,5 +14,8 @@ public interface BookingService {
 
     List<MidwifeBookingDetailsDTO> getAllBookingDetails();
 
+    List<BookingResponseDTO> getBookedTimeslotsByMother(String motherId);
+
+
     // Additional methods can be declared as needed
 }
