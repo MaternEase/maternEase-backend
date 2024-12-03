@@ -1,6 +1,7 @@
 package com.maternease.maternease.service;
 
 import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
+import com.maternease.maternease.dto.ChildDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.ClinicRecordUpdateDTO;
@@ -26,6 +27,15 @@ public interface MidwifeService {
 
     ResponseDTO registerChild(OurUsersDTO ourUsersDTO);
 
+
+    List<ChildDTO> getChildDetails();
+
+    AntenatalRiskConditionDTO getAntenatalRiskAssessmentDetails(String motherId);
+
+    ResponseDTO updateAntenatalRiskAssessmentDetails(String motherId, AntenatalRiskConditionDTO antenatalRiskConditionDTO);
+
+    List<ChildDTO> getAllChildren();
+
 //    AntenatalRiskConditionDTO getAntenatalRiskAssessmentDetails(String motherId);
 
     ResponseDTO updateAntenatalRiskAssessmentDetails(String motherId, AntenatalRiskConditionDTO antenatalRiskConditionDTO);
@@ -41,4 +51,5 @@ public interface MidwifeService {
     List<Blog> getAllBlogPosts();
 
     List<OurUsers> getAllMothers();
+
 }

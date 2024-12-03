@@ -1,6 +1,7 @@
 package com.maternease.maternease.controller;
 
 import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
+import com.maternease.maternease.dto.ChildDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.ClinicRecordUpdateDTO;
@@ -84,6 +85,26 @@ public class MidwifeController {
         return ResponseEntity.ok(response);
     }
 
+
+
+    @GetMapping(path = "/get-child-details/{childId}")
+    public List<ChildDTO> getChildDetails() {
+        List<ChildDTO> ChildDTO = midwifeService.getChildDetails();
+        return ChildDTO;
+    }
+
+    @GetMapping(path = "/get-all-children")
+    public ResponseEntity<List<ChildDTO>> getAllchildren() {
+        List<ChildDTO> childDetails = midwifeService.getAllChildren();
+        return ResponseEntity.ok(childDetails);
+    }
+
+
+    @GetMapping(path ="/get-antenatal-risk-assessment-details/{motherId}")
+    public ResponseEntity<AntenatalRiskConditionDTO> getAntenatalRiskAssessmentDetails(@PathVariable String motherId) {
+        AntenatalRiskConditionDTO assessmentDetails = midwifeService.getAntenatalRiskAssessmentDetails(motherId);
+        return ResponseEntity.ok(assessmentDetails);
+
 //    @GetMapping(path ="/get-antenatal-risk-assessment-details/{motherId}")
 //    public ResponseEntity<AntenatalRiskConditionDTO> getAntenatalRiskAssessmentDetails(@PathVariable String motherId) {
 //        AntenatalRiskConditionDTO assessmentDetails = midwifeService.getAntenatalRiskAssessmentDetails(motherId);
@@ -95,6 +116,7 @@ public class MidwifeController {
     public ResponseEntity<ResMBasicDetailsDTO> getBasicDetails(@PathVariable String motherId){
         ResMBasicDetailsDTO basicDetails = midwifeService.getBasicDetails(motherId);
         return ResponseEntity.ok(basicDetails);
+
     }
 
 //    others data can be get use this /get-antenatal-risk-assessment-details/{motherId} like wise
