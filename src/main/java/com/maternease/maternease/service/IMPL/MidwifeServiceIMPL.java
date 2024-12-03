@@ -429,5 +429,9 @@ public class MidwifeServiceIMPL implements MidwifeService {
         return blogRepo.findAll();
     }
 
+    @Override
+    public List<OurUsers> getAllMothers() {
+        return ourUsersRepo.findByRole("MOTHER"); // Assuming "MOTHER" is the role identifier
+    }
 
 }

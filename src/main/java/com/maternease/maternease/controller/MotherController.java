@@ -1,13 +1,18 @@
 package com.maternease.maternease.controller;
 
+import com.maternease.maternease.dto.ResponseDTO;
 import com.maternease.maternease.dto.request.BookingRequestDTO;
+import com.maternease.maternease.dto.request.LocationRequestDTO;
 import com.maternease.maternease.dto.response.BookingResponseDTO;
 import com.maternease.maternease.dto.response.MProfileDetailsDTO;
 import com.maternease.maternease.entity.AntenatalRiskCondition;
 import com.maternease.maternease.entity.ClinicSchedules;
 import com.maternease.maternease.service.BookingService;
+import com.maternease.maternease.service.LocationService;
 import com.maternease.maternease.service.MotherService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +29,9 @@ public class MotherController {
 
     @Autowired
     private BookingService bookingService;
+
+    @Autowired
+    private LocationService locationService;
 
 
     @GetMapping(path = "/profile/{motherId}")
@@ -66,6 +74,18 @@ public class MotherController {
     public ResponseEntity<List<ClinicSchedules>> getClinicSchedules(@PathVariable int userId){
         List<ClinicSchedules> clinicSchedules = motherService.getClinicSchedules(userId);
         return ResponseEntity.ok(clinicSchedules);
+    }
+
+    @PostMapping("/set-location")
+    public ResponseEntity<ResponseDTO> saveLocation(@RequestBody @Valid LocationRequestDTO locationRequest) {
+        ResponseDTO response = locationService.saveLocation(locationRequest);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/get-location/{userId}")
+    public ResponseEntity<LocationRequestDTO> getLocationByUserId(@PathVariable("userId") int userId) {
+        LocationRequestDTO locationDTO = locationService.getLocationByUserId(userId);
+        return new ResponseEntity<>(locationDTO, HttpStatus.OK);
     }
 
 }
