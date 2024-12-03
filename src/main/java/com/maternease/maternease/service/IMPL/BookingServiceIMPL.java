@@ -130,6 +130,31 @@ public class BookingServiceIMPL implements BookingService {
         return bookingDetailsList;
     }
 
+    @Override
+    public List<BookingResponseDTO> getBookedTimeslotsByMother(String motherId) {
+        // Validate if the mother exists
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new RuntimeException("Mother not found"));
+
+        // Fetch bookings by mother's ID
+        List<Booking> bookings = bookingRepo.findByMother_MotherId(motherId);
+
+        // Map bookings to BookingResponseDTO
+        List<BookingResponseDTO> bookingResponseList = new ArrayList<>();
+        for (Booking booking : bookings) {
+            Timeslot timeslot = booking.getTimeslot();
+            BookingResponseDTO bookingResponseDTO = new BookingResponseDTO();
+            bookingResponseDTO.setBookingId(booking.getId());
+            bookingResponseDTO.setTimeslotId(timeslot.getTimeslotId());
+            bookingResponseDTO.setTimeslotTime(timeslot.getTime());
+            bookingResponseDTO.setMotherId(mother.getMotherId());
+            bookingResponseDTO.setClinicType(booking.getClinicType());
+            bookingResponseList.add(bookingResponseDTO);
+        }
+
+        return bookingResponseList;
+    }
+
 
     private BookingResponseDTO mapToResponseDTO(Booking booking, Timeslot timeslot) {
         BookingResponseDTO responseDto = new BookingResponseDTO();

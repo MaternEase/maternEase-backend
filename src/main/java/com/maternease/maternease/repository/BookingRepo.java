@@ -11,5 +11,6 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
     long countByTimeslot_TimeslotId(Long timeslotId);
     List<Booking> findByTimeslot_TimeslotId(Long timeslotId);
 
+    List<Booking> findByMother_MotherId(String motherId);
 }
 
