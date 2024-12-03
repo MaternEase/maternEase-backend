@@ -13,6 +13,8 @@ public class Midwife {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String midId;
+
     // Define many-to-many relationship with Clinic
     @ManyToMany
     @JoinTable(

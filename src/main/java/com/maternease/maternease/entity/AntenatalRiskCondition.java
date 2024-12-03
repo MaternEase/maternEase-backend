@@ -79,4 +79,16 @@ public class AntenatalRiskCondition {
     @Column(name = "antenatalRiskConditions")
     private String antenatalRiskConditions;
 
+    @Column(name = "height")
+    private Double height;
+
+    @Column(name = "weight")
+    private Double weight;
+
+    @Column(name = "bmi")
+    private Double bmi;
+
+    @Column(name = "poa")
+    private Integer poa;
+
 }

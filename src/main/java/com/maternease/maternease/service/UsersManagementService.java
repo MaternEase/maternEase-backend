@@ -33,16 +33,6 @@ public class UsersManagementService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Inject admin credentials from application.properties
-//    @Value("${admin.email}")
-//    private String adminEmail;
-//
-//    @Value("${admin.password}")
-//    private String adminPassword;
-//
-//    private static final String ADMIN_ROLE = "ROLE_ADMIN";
-
-
 //    public ReqRes login(ReqRes loginRequest) {
 //        ReqRes response = new ReqRes();
 //        try {
@@ -126,6 +116,7 @@ public class UsersManagementService {
             response.setStatusCode(200);
             response.setToken(jwt);
             response.setRole(user.getRole());
+            response.setUserId(user.getId());
             response.setRefreshToken(refreshToken);
             response.setExpirationTime("24Hrs");
             response.setMassage("Successfully logged in");

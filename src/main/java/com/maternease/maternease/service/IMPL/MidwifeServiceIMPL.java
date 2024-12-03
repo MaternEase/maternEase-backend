@@ -4,8 +4,12 @@ import com.maternease.maternease.dto.AntenatalRiskConditionDTO;
 import com.maternease.maternease.dto.ChildDTO;
 import com.maternease.maternease.dto.OurUsersDTO;
 import com.maternease.maternease.dto.ResponseDTO;
+import com.maternease.maternease.dto.request.ClinicRecordUpdateDTO;
+import com.maternease.maternease.dto.request.MotherRegistrationDTO;
 import com.maternease.maternease.dto.response.DMotherTableDTO;
 import com.maternease.maternease.dto.response.EMotherTableDTO;
+import com.maternease.maternease.dto.response.ResClinicRecordDTO;
+import com.maternease.maternease.dto.response.ResMBasicDetailsDTO;
 import com.maternease.maternease.entity.*;
 import com.maternease.maternease.exception.MotherNotFoundException;
 import com.maternease.maternease.repository.*;
@@ -14,10 +18,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,10 +57,19 @@ public class MidwifeServiceIMPL implements MidwifeService {
     private ChildRepo childRepo;
 
     @Autowired
+    private ClinicRecordRepo clinicRecordRepo;
+
+    @Autowired
     private ModelMapper modelMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private BlogRepo blogRepo;
+
+    private static final String UPLOAD_DIR = "uploads/";  // Directory to store files
+
 
 
     public String generateMotherId() {
@@ -93,42 +114,44 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
 
     @Override
-    public ResponseDTO registerMother(OurUsersDTO ourUsersDTO) {
+    public ResponseDTO registerMother(MotherRegistrationDTO motherRegistrationDTO) {
 
         modelMapper.typeMap(OurUsersDTO.class, OurUsers.class).addMappings(mapper -> {
             mapper.skip(OurUsers::setId);  // Skip mapping for the ID field
 
         });
 
-        // Map OurUsersDTO to OurUsers entity
-        OurUsers newUser = modelMapper.map(ourUsersDTO,OurUsers.class);
-
-
-
+        OurUsers newUser = modelMapper.map(motherRegistrationDTO, OurUsers.class);
         newUser.setRole("MOTHER");
-        newUser.setPassword(passwordEncoder.encode(ourUsersDTO.getNic()));  // Set initial password to NIC
+        newUser.setPassword(passwordEncoder.encode(motherRegistrationDTO.getNic()));  // Encode NIC as password
 
         // Save the new user entity in OurUsers
         OurUsers savedUser = ourUsersRepo.save(newUser);
 
-        //Create AntenatalRiskCondition
-        AntenatalRiskCondition antenatalRiskCondition = new AntenatalRiskCondition();
-        antenatalRiskCondition.setFullName(savedUser.getFullName());
-        antenatalRiskCondition.setAge(savedUser.getAge());
-        antenatalRiskCondition.setContactNo(savedUser.getContactNo());
-        antenatalRiskCondition.setAddress(savedUser.getAddress());
+        // Map DTO to AntenatalRiskCondition entity
+        AntenatalRiskCondition antenatalRiskCondition = modelMapper.map(motherRegistrationDTO, AntenatalRiskCondition.class);
 
-        // Save the AntenatalRiskCondition entry
-        AntenatalRiskCondition savedRiskConditions = antenatalRiskConditionRepo.save(antenatalRiskCondition);
+        // Save AntenatalRiskCondition
+        AntenatalRiskCondition savedRiskCondition = antenatalRiskConditionRepo.save(antenatalRiskCondition);
 
-        //Create and link Mother entity to OurUsers and AntenatalRiskCondition
+        // Create and link Mother entity
         Mother mother = new Mother();
         mother.setMotherId(generateMotherId()); // Generate custom motherId
         mother.setNic(savedUser.getNic());
         mother.setContactNo(savedUser.getContactNo());
         mother.setStatus(0); // Expected Mother
         mother.setOurUsers(savedUser);
-        mother.setAntenatalRiskCondition(savedRiskConditions);
+        mother.setAntenatalRiskCondition(savedRiskCondition);
+
+        Date lastMenstrualDate = motherRegistrationDTO.getLastMenstrualDate();
+
+        if (lastMenstrualDate != null) {
+            LocalDate localLastMenstrualDate = lastMenstrualDate.toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+            LocalDate expectedDate = localLastMenstrualDate.plusDays(280);
+            mother.setExpected_date(java.sql.Date.valueOf(expectedDate)); // Convert to SQL Date
+        }
 
         //Save the Mother entity
         Mother savedMother = motherRepo.save(mother);
@@ -216,21 +239,43 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
 
 
+//    @Override
+//    public AntenatalRiskConditionDTO getAntenatalRiskAssessmentDetails(String motherId) {
+//
+//        Mother mother = motherRepo.findById(motherId)
+//                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+//
+//        Integer arConditionId = mother.getAntenatalRiskCondition().getId();
+//
+//        Optional<AntenatalRiskCondition> antenatalRiskCondition = antenatalRiskConditionRepo.findById(arConditionId);
+//
+//        return modelMapper.map(antenatalRiskCondition, AntenatalRiskConditionDTO.class);
+//
+//
+//
+//    }
+
+
     @Override
-    public AntenatalRiskConditionDTO getAntenatalRiskAssessmentDetails(String motherId) {
+    public ResMBasicDetailsDTO getBasicDetails(String motherId) {
+
 
         Mother mother = motherRepo.findById(motherId)
                 .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
 
-        Integer arConditionId = mother.getAntenatalRiskCondition().getId();
+        ResMBasicDetailsDTO resMBasicDetailsDTO = modelMapper.map(mother.getOurUsers(),ResMBasicDetailsDTO.class);
+        if(mother.getAntenatalRiskCondition() != null){
+            modelMapper.map(mother.getAntenatalRiskCondition(),resMBasicDetailsDTO);
+        }
 
-        Optional<AntenatalRiskCondition> antenatalRiskCondition = antenatalRiskConditionRepo.findById(arConditionId);
-
-        return modelMapper.map(antenatalRiskCondition, AntenatalRiskConditionDTO.class);
+        resMBasicDetailsDTO.setMotherId(mother.getMotherId());
 
 
 
+        return resMBasicDetailsDTO;
     }
+
+
 
     @Override
     public ResponseDTO updateAntenatalRiskAssessmentDetails(String motherId, AntenatalRiskConditionDTO antenatalRiskConditionDTO) {
@@ -255,6 +300,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
         response.setResponseMzg("Update data  successfully.");
         return response;
     }
+
 
 
     private String findMotherName(String motherId) {
@@ -305,6 +351,7 @@ public class MidwifeServiceIMPL implements MidwifeService {
 
 
     @Override
+
     public List<ChildDTO> getChildDetails() {
         List<Child> ChildDetails = childRepo.findAll();
 
@@ -340,4 +387,87 @@ public class MidwifeServiceIMPL implements MidwifeService {
         }
     }
 
+
+
+    public ResponseDTO addClinicRecord(String motherId,ClinicRecordUpdateDTO clinicRecordUpdateDTO) {
+
+        // Configure ModelMapper locally to skip 'id' field
+        modelMapper.typeMap(ClinicRecordUpdateDTO.class, ClinicRecord.class)
+                .addMappings(mapper -> mapper.skip(ClinicRecord::setId));
+
+
+//        String motherId =clinicRecordUpdateDTO.getMotherId();
+
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+
+        ClinicRecord clinicRecord=modelMapper.map(clinicRecordUpdateDTO, ClinicRecord.class);
+
+        clinicRecord.setCreatedAt(LocalDateTime.now());
+        clinicRecord.setMotherId(motherId);
+        ClinicRecord savedRecord = clinicRecordRepo.save(clinicRecord);
+
+        // Prepare and return success response
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("200");
+        response.setResponseMzg("Clinic Record data  add successfully.");
+        return response;
+    }
+
+    @Override
+    public List<ResClinicRecordDTO> getClinicRecord(String motherId) {
+
+        Mother mother = motherRepo.findById(motherId)
+                .orElseThrow(() -> new MotherNotFoundException("Mother not found with id: " + motherId));
+
+        List<ClinicRecord> clinicRecords = clinicRecordRepo.findAllByMotherId(motherId);
+
+        // Map each ClinicRecord to ResClinicRecordDTO
+        return clinicRecords.stream()
+                .map(record -> modelMapper.map(record, ResClinicRecordDTO.class))
+                .toList();
+    }
+
+    @Override
+    public ResponseDTO createBlogPost(String title, String content, String postType, MultipartFile media) throws IOException {
+        String filePath = null;
+        if (media != null && !media.isEmpty()) {
+            filePath = saveFile(media);
+        }
+
+        Blog blog = new Blog();
+        blog.setTitle(title);
+        blog.setContent(content);
+        blog.setPostType(postType);
+        blog.setMediaPath(filePath); // Store the file path in the database
+
+        blogRepo.save(blog);
+        ResponseDTO response = new ResponseDTO();
+        response.setResponseCode("200");
+        response.setResponseMzg("Post created successfully.");
+
+        return response;
+    }
+
+    // Method to save a file and return its path
+    public String saveFile(MultipartFile file) throws IOException {
+        Path path = Paths.get(UPLOAD_DIR);
+        if (!Files.exists(path)) {
+            Files.createDirectories(path);
+        }
+
+        String fileName = file.getOriginalFilename();
+        Path filePath = path.resolve(fileName);
+        Files.copy(file.getInputStream(), filePath);
+
+        return UPLOAD_DIR + fileName;  // Return the path to store in the DB
+    }
+
+    @Override
+    public List<Blog> getAllBlogPosts() {
+        return blogRepo.findAll();
+    }
+
+
+}
 

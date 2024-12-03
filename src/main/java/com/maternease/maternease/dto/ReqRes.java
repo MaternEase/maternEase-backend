@@ -2,6 +2,7 @@ package com.maternease.maternease.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.maternease.maternease.entity.Midwife;
 import com.maternease.maternease.entity.OurUsers;
 import lombok.Data;
 
@@ -34,7 +35,9 @@ public class ReqRes {
     private String gender;
     private String role;
     private String childId;
+    private int userId;
     private OurUsers ourUsers;
+    private Midwife midwife;
     private List<OurUsers> ourUsersList;
 
 }

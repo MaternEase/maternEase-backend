@@ -14,23 +14,33 @@ public class Clinic {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int clinicId;
 
-    private String clinicNo;
-    private String gramaniDivison;
+//    private String gramaniDivison;
+
+    @ElementCollection
+    @CollectionTable(name = "gramani_divisions", joinColumns = @JoinColumn(name = "clinic_id"))
+    @Column(name = "gramani_division")
+    private List<String> gramaniDivisions; // support multiple divisions
+
     private String MOHArea;
+
     private String PHMArea;
+
     private String clinicName;
+    private String location;
 
-//    @OneToMany(mappedBy = "clinic")
-//    private List<Users> users;
+    private String midwifeOne;
+    private String midwifeTwo;
+    private String midwifeThree;
+    private int firstClinicWeek;
+    private int secondClinicWeek;
+    private int clinicDay;
 
-//    @ManyToOne
-//    @JoinColumn(name = "admin_id")
-//    private Admin admin;
-//
-//    @OneToMany(mappedBy = "clinic")
-//    private List<ClinicAttendee> attendees;
 
-    // Many-to-many relationship with Midwife
-    @ManyToMany(mappedBy = "assignedClinics")
-    private List<Midwife> assignedMidwives;
+    @ManyToMany
+    @JoinTable(
+            name = "clinic_reserved_midwives",
+            joinColumns = @JoinColumn(name = "clinic_id"),
+            inverseJoinColumns = @JoinColumn(name = "midwife_id")
+    )
+    private List<Midwife> reservedMidwives; // Reserved midwives
 }
