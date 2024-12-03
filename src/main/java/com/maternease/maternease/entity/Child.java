@@ -13,7 +13,59 @@ public class Child {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+//    @Transient
+//    private String motherId;
+//
+//    public String getMotherId() {
+//        if (Mother != null) {
+//            return Mother.getMotherId();
+//        }
+//        return null;
+//    }
+
+    @Transient
+    private String name;
+
+    public String getName() {
+        if (childProfile != null) {
+            return childProfile.getBabyName();
+        }
+        return null;
+    }
+
+
+
+    @Transient
+    private Integer age;
+
+    public Integer getAge() {
+        if (ourUsers != null) {
+            return ourUsers.getAge();
+        }
+        return null;
+    }
+
+
+
+    @Column(name = "guardianName")
     private String guardianName;
+
+    @Transient
+    private String contactNumber;
+
+    public String getContactNumber() {
+        if (ourUsers != null) {
+            return ourUsers.getContactNo();
+        }
+        return null;
+    }
+
+    @Column(name = "`condition`")
+    private String condition;
+
+    @Column(name = "referToDoctor")
+    private String referToDoctor;
+
     private String gRelationship;
     private String bloodGroup;
     private String status;
@@ -29,6 +81,7 @@ public class Child {
 
     @OneToOne
     @JoinColumn(name = "child_profile_id", referencedColumnName = "id")
+    @JoinColumn(name = "name", referencedColumnName = "baby_name")
     private ChildProfile childProfile;
 
     @OneToOne
